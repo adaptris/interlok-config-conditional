@@ -46,7 +46,7 @@ public class While extends ServiceImp {
         getIfService().doService(msg);
         
         loopCount ++;
-        if(loopCount >= this.getMaxLoops()) {
+        if((this.getMaxLoops() > 0) && (loopCount >= this.getMaxLoops())) {
           log.debug("Reached maximum loops({}), breaking.", this.getMaxLoops());
           break;
         }
