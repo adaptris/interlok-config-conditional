@@ -6,23 +6,23 @@ import com.adaptris.core.DefaultMessageFactory;
 
 import junit.framework.TestCase;
 
-public class DoesNotExistTest extends TestCase {
+public class NotNullTest extends TestCase {
   
   private Operator operator;
   
   private AdaptrisMessage message;
   
   public void setUp() throws Exception {
-    operator = new DoesNotExist();
+    operator = new NotNull();
     message = DefaultMessageFactory.getDefaultInstance().newMessage();
   }
   
   public void testExists() {
-    assertFalse(operator.apply(message,1L));
+    assertTrue(operator.apply(message, 1L));
   }
   
   public void testNotExists() {
-    assertTrue(operator.apply(message, null));
+    assertFalse(operator.apply(message, null));
   }
 
 }
