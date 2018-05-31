@@ -9,22 +9,110 @@
 
 // Apply the java plugin to add support for Java
 apply plugin: 'java'
+apply plugin: 'maven'
+apply plugin: 'maven-publish'
+apply plugin: "jacoco"
+
+ext {
+  adpCoreVersion = project.hasProperty('adpCoreVersion') ? project.getProperty('adpCoreVersion') : '3.7-SNAPSHOT'
+  releaseVersion = project.hasProperty('releaseVersion') ? project.getProperty('releaseVersion') : '3.7-SNAPSHOT'
+  mavenPublishUrl = project.hasProperty('mavenPublishUrl') ? project.getProperty('mavenPublishUrl') : 'https://development.adaptris.net/nexus/content/repositories/snapshots'
+  repoUsername = project.hasProperty('repoUsername') ? project.getProperty('repoUsername') : 'unknown'
+  repoPassword = project.hasProperty('repoPassword') ? project.getProperty('repoPassword') : 'unknown'
+  defaultNexusRepo = project.hasProperty('defaultNexusRepo') ? project.getProperty('defaultNexusRepo') : 'https://repo1.maven.org/maven2/'
+  componentName = 'Interlok Conditional Configuration'
+  slf4jVersion = '1.7.12'
+  mockitoVersion = '1.9.5'
+}
+
+sourceCompatibility = 1.7
+group   = 'com.adaptris'
+version = releaseVersion
+def versionDir = "$buildDir/version"
 
 // In this section you declare where to find the dependencies of your project
 repositories {
     // Use 'jcenter' for resolving your dependencies.
     // You can declare any Maven/Ivy/file repository here.
-    jcenter()
+    maven { url "$defaultNexusRepo" }
+    maven { url "https://development.adaptris.net/nexus/content/groups/public" }
+    maven {
+      credentials {
+        username repoUsername
+        password repoPassword
+      }
+      url "https://development.adaptris.net/nexus/content/groups/private"
+    }
+    maven { url "https://development.adaptris.net/nexus/content/repositories/snapshots" }
+    maven { url "https://development.adaptris.net/nexus/content/repositories/releases" }
+   // jcenter()
 }
 
 // In this section you declare the dependencies for your production and test code
 dependencies {
-    // The production code uses the SLF4J logging API at compile time
-    compile 'org.slf4j:slf4j-api:1.7.21'
+    compile ("com.adaptris:adp-core:$adpCoreVersion") { changing= true}
+  	compile ("com.adaptris:adp-core-apt:$adpCoreVersion") { changing= true}
+  	compile ("com.adaptris:adp-licensing:$adpCoreVersion") { changing= true}
+  	compile ("org.slf4j:slf4j-api:$slf4jVersion")
 
-    // Declare the dependency for your favourite test framework you want to use in your tests.
-    // TestNG is also supported by the Gradle Test task. Just change the
-    // testCompile dependency to testCompile 'org.testng:testng:6.8.1' and add
-    // 'test.useTestNG()' to your build script.
-    testCompile 'junit:junit:4.12'
+  	testCompile ('junit:junit:4.11')
+  	testCompile ("com.adaptris:adp-stubs:$adpCoreVersion") { changing= true}
+  	testCompile ('log4j:log4j:1.2.17')
+  	testCompile ("org.slf4j:slf4j-log4j12:$slf4jVersion")
+  	testCompile ("org.slf4j:jcl-over-slf4j:$slf4jVersion")
+  	testCompile ("org.mockito:mockito-all:$mockitoVersion")
+
 }
+
+configurations {
+    javadoc {}
+    all*.exclude group: 'c3p0'
+    all*.exclude group: 'commons-logging'
+  }
+
+  configurations.all {
+    resolutionStrategy.cacheChangingModulesFor 0, 'seconds'
+  }
+
+javadoc {
+    configure(options) {
+      links = [
+        "https://development.adaptris.net/javadocs/v3-snapshot/Interlok-API/",
+        "https://development.adaptris.net/javadocs/v3-snapshot/Interlok-Common/",
+      ]
+      taglets = ["com.adaptris.taglet.ConfigTaglet", "com.adaptris.taglet.LicenseTaglet"]
+      options.addStringOption "tagletpath", configurations.javadoc.asPath
+    }
+  }
+
+  jacoco {
+    toolVersion="0.7.7.201606060606"
+  }
+  
+  jacocoTestReport {
+    group = "Reporting"
+    reports {
+        xml.enabled true
+        csv.enabled false
+        html.destination "${buildDir}/reports/coverage"
+    }
+  }
+
+  sourceSets {
+    main {
+      output.dir(versionDir, builtBy: 'generateVersion')
+    }
+  }
+
+  // Generate the META-INF/adaptris-version file
+  task generateVersion {
+    doLast {
+      def versionFile = new File(new File(versionDir, 'META-INF'), 'adaptris-version')
+      versionFile.getParentFile().mkdirs()
+      ant.propertyfile(file: versionFile) {
+        entry(key: 'component.name', value: componentName)
+        entry(key: 'build.version', value: releaseVersion)
+        entry(key: 'build.date', value: new Date().format('yyyy-MM-dd'))
+      }
+    }
+  }
