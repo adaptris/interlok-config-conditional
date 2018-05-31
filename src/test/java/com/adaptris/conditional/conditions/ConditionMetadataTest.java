@@ -1,7 +1,7 @@
 package com.adaptris.conditional.conditions;
 
-import com.adaptris.conditional.operator.DoesNotExist;
-import com.adaptris.conditional.operator.Exists;
+import com.adaptris.conditional.operator.Null;
+import com.adaptris.conditional.operator.NotNull;
 import com.adaptris.core.AdaptrisMessage;
 import com.adaptris.core.DefaultMessageFactory;
 
@@ -22,7 +22,7 @@ public class ConditionMetadataTest extends TestCase {
   
   public void testMetadataExists() throws Exception {
     condition.setMetadataKey("key1");
-    condition.setOperator(new Exists());
+    condition.setOperator(new NotNull());
     message.addMessageHeader("key1", "value1");
     
     assertTrue(condition.evaluate(message));
@@ -30,7 +30,7 @@ public class ConditionMetadataTest extends TestCase {
   
   public void testMetadataDoesNotExist() throws Exception {
     condition.setMetadataKey("key1");
-    condition.setOperator(new DoesNotExist());
+    condition.setOperator(new Null());
     
     assertTrue(condition.evaluate(message));
   }
