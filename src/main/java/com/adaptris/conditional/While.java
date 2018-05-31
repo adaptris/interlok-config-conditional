@@ -7,6 +7,7 @@ import org.slf4j.LoggerFactory;
 
 import com.adaptris.annotation.AdapterComponent;
 import com.adaptris.annotation.ComponentProfile;
+import com.adaptris.annotation.InputFieldDefault;
 import com.adaptris.core.AdaptrisMessage;
 import com.adaptris.core.CoreException;
 import com.adaptris.core.Service;
@@ -29,6 +30,7 @@ public class While extends ServiceImp {
   @NotNull
   private Service ifService;
 
+  @InputFieldDefault("10")
   private Integer maxLoops;
   
   public While() {
