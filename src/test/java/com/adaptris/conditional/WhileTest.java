@@ -9,7 +9,7 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
 import com.adaptris.conditional.conditions.ConditionMetadata;
-import com.adaptris.conditional.operator.Exists;
+import com.adaptris.conditional.operator.NotNull;
 import com.adaptris.core.AdaptrisMessage;
 import com.adaptris.core.CoreException;
 import com.adaptris.core.DefaultMessageFactory;
@@ -85,8 +85,9 @@ public class WhileTest extends ServiceCase {
         .thenReturn(true)
         .thenReturn(false);
     
+    logicalExpression.setMaxLoops(0); // loop forever
     logicalExpression.doService(message);
-    logicalExpression.setMaxLoops(10);
+    
     
     verify(mockService, times(5)).doService(message);
   }
@@ -140,7 +141,7 @@ public class WhileTest extends ServiceCase {
   protected Object retrieveObjectForSampleConfig() {
     ConditionMetadata condition = new ConditionMetadata();
     condition.setMetadataKey("key1");
-    condition.setOperator(new Exists());
+    condition.setOperator(new NotNull());
     
     logicalExpression.setCondition(condition);
     logicalExpression.setIfService(new LogMessageService());
