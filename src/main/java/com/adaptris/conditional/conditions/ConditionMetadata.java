@@ -17,7 +17,7 @@ import com.thoughtworks.xstream.annotations.XStreamAlias;
 
 @XStreamAlias("metadata")
 @AdapterComponent
-@ComponentProfile(summary = "Tests a metadata key against a configured operator.", tag = "condition,service,metadata")
+@ComponentProfile(summary = "Tests a metadata key against a configured operator.", tag = "condition,metadata")
 @DisplayOrder(order = {"metadataKey", "operator"})
 public class ConditionMetadata implements Condition {
   

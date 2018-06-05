@@ -9,7 +9,9 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
 import com.adaptris.conditional.conditions.ConditionAnd;
+import com.adaptris.conditional.conditions.ConditionExpression;
 import com.adaptris.conditional.conditions.ConditionMetadata;
+import com.adaptris.conditional.conditions.ConditionOr;
 import com.adaptris.conditional.operator.Equals;
 import com.adaptris.conditional.operator.NotNull;
 import com.adaptris.conditional.service.NoOpService;
@@ -160,9 +162,15 @@ public class IfElseTest  extends ServiceCase {
     condition2.setMetadataKey("key2");
     condition2.setOperator(equals);
     
+    ConditionOr conditionOr = new ConditionOr();
+    ConditionExpression conditionExpression = new ConditionExpression();
+    conditionExpression.setAlgorithm("(%message{key1} - 10) == %message{key2}");
+    conditionOr.getConditions().add(conditionExpression);
+    conditionOr.getConditions().add(condition2);
+    
     ConditionAnd conditionAnd = new ConditionAnd();
     conditionAnd.getConditions().add(condition);
-    conditionAnd.getConditions().add(condition2);
+    conditionAnd.getConditions().add(conditionOr);
     
     ThenService thenSrvc = new ThenService();
     ElseService elseSrvc = new ElseService();

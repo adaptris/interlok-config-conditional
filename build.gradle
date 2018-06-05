@@ -55,6 +55,8 @@ dependencies {
   	compile ("com.adaptris:adp-licensing:$adpCoreVersion") { changing= true}
   	compile ("org.slf4j:slf4j-api:$slf4jVersion")
 
+	compile ("com.adaptris:interlok-expressions:$adpCoreVersion") { changing= true}
+
   	testCompile ('junit:junit:4.11')
   	testCompile ("com.adaptris:adp-stubs:$adpCoreVersion") { changing= true}
   	testCompile ('log4j:log4j:1.2.17')
