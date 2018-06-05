@@ -4,6 +4,6 @@ import com.adaptris.core.AdaptrisMessage;
 
 public interface Operator {
   
-  public boolean apply(AdaptrisMessage message, Object object);
+  public boolean apply(AdaptrisMessage message, String object);
 
 }

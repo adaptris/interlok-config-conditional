@@ -9,7 +9,6 @@ import com.adaptris.annotation.AdapterComponent;
 import com.adaptris.annotation.ComponentProfile;
 import com.adaptris.core.AdaptrisMessage;
 import com.adaptris.core.CoreException;
-import com.adaptris.core.Service;
 import com.adaptris.core.ServiceException;
 import com.adaptris.core.ServiceImp;
 import com.thoughtworks.xstream.annotations.XStreamAlias;
@@ -25,10 +24,15 @@ public class IfElse extends ServiceImp {
   private Condition condition;
   
   @NotNull
-  private Service ifService;
+  private ThenService thenService;
   
   @NotNull
-  private Service elseService;
+  private ElseService elseService;
+  
+  public IfElse() {
+    this.setThenService(new ThenService());
+    this.setElseService(new ElseService());
+  }
   
   
   @Override
@@ -37,10 +41,10 @@ public class IfElse extends ServiceImp {
       log.trace("Running logical 'IF', with condition class {}", this.getCondition().getClass().getSimpleName());
       if(this.getCondition().evaluate(msg)) {
         log.trace("Logical 'IF' evaluated to true, running service.");
-        this.getIfService().doService(msg);
+        this.getThenService().getService().doService(msg);
       } else {
         log.trace("Logical 'IF' evaluated to false, running 'else' service.");
-        this.getElseService().doService(msg);
+        this.getElseService().getService().doService(msg);
       }
     } catch (CoreException e) {
       throw new ServiceException(e);
@@ -52,31 +56,31 @@ public class IfElse extends ServiceImp {
   public void prepare() throws CoreException {
     if(this.getCondition() == null)
       throw new CoreException("No condition has been set for logical 'IF'");
-    this.getIfService().prepare();
+    this.getThenService().prepare();
     this.getElseService().prepare();
   }
 
   @Override
   protected void initService() throws CoreException {
-    this.getIfService().init();
+    this.getThenService().init();
     this.getElseService().init();
   }
 
   @Override
   protected void closeService() {
-    this.getIfService().close();
+    this.getThenService().close();
     this.getElseService().close();
   }
   
   @Override
   public void start() throws CoreException {
-    this.getIfService().start();
+    this.getThenService().start();
     this.getElseService().start();
   }
   
   @Override
   public void stop() {
-    this.getIfService().stop();
+    this.getThenService().stop();
     this.getElseService().stop();
   }
   
@@ -89,20 +93,21 @@ public class IfElse extends ServiceImp {
     this.condition = condition;
   }
 
-  public Service getIfService() {
-    return ifService;
+  public ThenService getThenService() {
+    return thenService;
   }
 
-  public void setIfService(Service ifTrueService) {
-    this.ifService = ifTrueService;
+  public void setThenService(ThenService thenService) {
+    this.thenService = thenService;
   }
 
-  public Service getElseService() {
+  public ElseService getElseService() {
     return elseService;
   }
 
-  public void setElseService(Service ifNottrueService) {
-    this.elseService = ifNottrueService;
+  public void setElseService(ElseService elseService) {
+    this.elseService = elseService;
   }
+
 
 }

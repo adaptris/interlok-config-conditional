@@ -9,7 +9,9 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
 import com.adaptris.conditional.conditions.ConditionMetadata;
+import com.adaptris.conditional.conditions.ConditionOr;
 import com.adaptris.conditional.operator.NotNull;
+import com.adaptris.conditional.operator.Null;
 import com.adaptris.core.AdaptrisMessage;
 import com.adaptris.core.CoreException;
 import com.adaptris.core.DefaultMessageFactory;
@@ -25,6 +27,8 @@ public class WhileTest extends ServiceCase {
 
   private AdaptrisMessage message;
   
+  private ThenService thenService;
+  
   @Mock private Service mockService;
   
   @Mock private Condition mockCondition;
@@ -32,8 +36,11 @@ public class WhileTest extends ServiceCase {
   public void setUp() throws Exception {
     MockitoAnnotations.initMocks(this);
     
+    thenService = new ThenService();
+    thenService.setService(mockService);
+    
     logicalExpression = new While();
-    logicalExpression.setIfService(mockService);
+    logicalExpression.setThenService(thenService);
     logicalExpression.setCondition(mockCondition);
     
     message = DefaultMessageFactory.getDefaultInstance().newMessage();
@@ -143,8 +150,19 @@ public class WhileTest extends ServiceCase {
     condition.setMetadataKey("key1");
     condition.setOperator(new NotNull());
     
-    logicalExpression.setCondition(condition);
-    logicalExpression.setIfService(new LogMessageService());
+    ConditionMetadata condition2 = new ConditionMetadata();
+    condition2.setMetadataKey("key2");
+    condition2.setOperator(new Null());
+    
+    ConditionOr conditionOr = new ConditionOr();
+    conditionOr.getConditions().add(condition);
+    conditionOr.getConditions().add(condition2);
+    
+    ThenService thenSrvc = new ThenService();
+    thenSrvc.setService(new LogMessageService());
+    
+    logicalExpression.setCondition(conditionOr);
+    logicalExpression.setThenService(thenSrvc);
     
     // We init and start the service in the setup, lets stop it.
     try {

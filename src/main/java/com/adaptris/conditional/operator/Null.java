@@ -14,13 +14,8 @@ import com.thoughtworks.xstream.annotations.XStreamAlias;
 public class Null implements Operator {
 
   @Override
-  public boolean apply(AdaptrisMessage message, Object object) {
-    if(object == null)
-      return true;
-    else if (object instanceof String) {
-      return StringUtils.isEmpty((String) object);
-    } else
-      return false;
+  public boolean apply(AdaptrisMessage message, String object) {
+    return StringUtils.isEmpty((String) object);
   }
 
 }

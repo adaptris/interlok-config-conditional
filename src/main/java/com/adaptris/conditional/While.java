@@ -10,7 +10,6 @@ import com.adaptris.annotation.ComponentProfile;
 import com.adaptris.annotation.InputFieldDefault;
 import com.adaptris.core.AdaptrisMessage;
 import com.adaptris.core.CoreException;
-import com.adaptris.core.Service;
 import com.adaptris.core.ServiceException;
 import com.adaptris.core.ServiceImp;
 import com.thoughtworks.xstream.annotations.XStreamAlias;
@@ -28,7 +27,7 @@ public class While extends ServiceImp {
   private Condition condition;
   
   @NotNull
-  private Service ifService;
+  private ThenService thenService;
 
   @InputFieldDefault("10")
   private Integer maxLoops;
@@ -45,7 +44,7 @@ public class While extends ServiceImp {
       
       while(this.getCondition().evaluate(msg)) {
         log.trace("Logical 'IF' evaluated to true on WHILE test, running service.");
-        getIfService().doService(msg);
+        getThenService().getService().doService(msg);
         
         loopCount ++;
         if((this.getMaxLoops() > 0) && (loopCount >= this.getMaxLoops())) {
@@ -65,27 +64,27 @@ public class While extends ServiceImp {
   public void prepare() throws CoreException {
     if(this.getCondition() == null)
       throw new CoreException("No condition has been set for logical 'IF'");
-    this.getIfService().prepare();
+    this.getThenService().prepare();
   }
 
   @Override
   protected void initService() throws CoreException {
-    this.getIfService().init();
+    this.getThenService().init();
   }
 
   @Override
   protected void closeService() {
-    this.getIfService().close();
+    this.getThenService().close();
   }
   
   @Override
   public void start() throws CoreException {
-    this.getIfService().start();
+    this.getThenService().start();
   }
   
   @Override
   public void stop() {
-    this.getIfService().stop();
+    this.getThenService().stop();
   }
   
 
@@ -97,12 +96,12 @@ public class While extends ServiceImp {
     this.condition = condition;
   }
 
-  public Service getIfService() {
-    return ifService;
+  public ThenService getThenService() {
+    return thenService;
   }
 
-  public void setIfService(Service ifTrueService) {
-    this.ifService = ifTrueService;
+  public void setThenService(ThenService ifTrueService) {
+    this.thenService = ifTrueService;
   }
   
   public Integer getMaxLoops() {

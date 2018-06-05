@@ -8,8 +8,11 @@ import static org.mockito.Mockito.when;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
+import com.adaptris.conditional.conditions.ConditionAnd;
 import com.adaptris.conditional.conditions.ConditionMetadata;
+import com.adaptris.conditional.operator.Equals;
 import com.adaptris.conditional.operator.NotNull;
+import com.adaptris.conditional.service.NoOpService;
 import com.adaptris.core.AdaptrisMessage;
 import com.adaptris.core.CoreException;
 import com.adaptris.core.DefaultMessageFactory;
@@ -25,6 +28,10 @@ public class IfElseTest  extends ServiceCase {
 
   private AdaptrisMessage message;
   
+  private ThenService thenService;
+  
+  private ElseService elseService;
+  
   @Mock private Service mockService;
   
   @Mock private Service mockElseService;
@@ -34,9 +41,15 @@ public class IfElseTest  extends ServiceCase {
   public void setUp() throws Exception {
     MockitoAnnotations.initMocks(this);
     
+    thenService = new ThenService();
+    elseService = new ElseService();
+    
+    thenService.setService(mockService);
+    elseService.setService(mockElseService);
+    
     logicalExpression = new IfElse();
-    logicalExpression.setIfService(mockService);
-    logicalExpression.setElseService(mockElseService);
+    logicalExpression.setThenService(thenService);
+    logicalExpression.setElseService(elseService);
     logicalExpression.setCondition(mockCondition);
     
     message = DefaultMessageFactory.getDefaultInstance().newMessage();
@@ -48,6 +61,36 @@ public class IfElseTest  extends ServiceCase {
   
   public void tearDown() throws Exception {
     this.StopMe(logicalExpression);
+  }
+  
+  public void testNoThenService() throws Exception {
+    logicalExpression.getThenService().setService(new NoOpService());
+    
+    when(mockCondition.evaluate(message))
+        .thenReturn(true);
+
+    // purely to re-initiate the NoOpService
+    this.StopMe(logicalExpression);
+    this.startMe(logicalExpression);
+    
+    logicalExpression.doService(message);
+    
+    verify(mockElseService, times(0)).doService(message);
+  }
+  
+  public void testNoElseService() throws Exception {
+    logicalExpression.getElseService().setService(new NoOpService());
+    
+    when(mockCondition.evaluate(message))
+        .thenReturn(true);
+
+    // purely to re-initiate the NoOpService
+    this.StopMe(logicalExpression);
+    this.startMe(logicalExpression);
+    
+    logicalExpression.doService(message);
+    
+    verify(mockService, times(1)).doService(message);
   }
   
   public void testShouldRunService() throws Exception {
@@ -111,9 +154,25 @@ public class IfElseTest  extends ServiceCase {
     condition.setMetadataKey("key1");
     condition.setOperator(new NotNull());
     
-    logicalExpression.setCondition(condition);
-    logicalExpression.setIfService(new LogMessageService());
-    logicalExpression.setElseService(new LogMessageService());
+    Equals equals = new Equals();
+    equals.setValue("myValue");
+    ConditionMetadata condition2 = new ConditionMetadata();
+    condition2.setMetadataKey("key2");
+    condition2.setOperator(equals);
+    
+    ConditionAnd conditionAnd = new ConditionAnd();
+    conditionAnd.getConditions().add(condition);
+    conditionAnd.getConditions().add(condition2);
+    
+    ThenService thenSrvc = new ThenService();
+    ElseService elseSrvc = new ElseService();
+    
+    thenSrvc.setService(new LogMessageService());
+    elseSrvc.setService(new LogMessageService());
+    
+    logicalExpression.setCondition(conditionAnd);
+    logicalExpression.setThenService(thenSrvc);
+    logicalExpression.setElseService(elseSrvc);
     
  // We init and start the service in the setup, lets stop it.
     try {

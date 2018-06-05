@@ -12,7 +12,7 @@ import com.thoughtworks.xstream.annotations.XStreamAlias;
 public class NotNull implements Operator {
 
   @Override
-  public boolean apply(AdaptrisMessage message, Object object) {
+  public boolean apply(AdaptrisMessage message, String object) {
     return object != null;
   }
 

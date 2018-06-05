@@ -11,21 +11,18 @@ import com.thoughtworks.xstream.annotations.XStreamAlias;
 @ComponentProfile(summary = "Tests that a configured value does not equal the supplied value.", tag = "operator")
 public class NotEquals implements Operator {
 
-private Object value;
+  private String value;
   
   @Override
-  public boolean apply(AdaptrisMessage message, Object object) {
-    if(this.getValue() instanceof String)
-      return !message.resolve((String) this.getValue()).equals(message.resolve((String) object));
-    else
-      return this.getValue() != object;
+  public boolean apply(AdaptrisMessage message, String object) {
+    return !message.resolve((String) this.getValue()).equals(message.resolve((String) object));
   }
 
-  public Object getValue() {
+  public String getValue() {
     return value;
   }
 
-  public void setValue(Object value) {
+  public void setValue(String value) {
     this.value = value;
   }
 

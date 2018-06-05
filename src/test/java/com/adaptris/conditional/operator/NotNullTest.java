@@ -18,7 +18,7 @@ public class NotNullTest extends TestCase {
   }
   
   public void testExists() {
-    assertTrue(operator.apply(message, 1L));
+    assertTrue(operator.apply(message, "1"));
   }
   
   public void testNotExists() {

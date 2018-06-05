@@ -15,21 +15,7 @@ public class EqualsTest extends TestCase {
     operator = new Equals();
     message = DefaultMessageFactory.getDefaultInstance().newMessage();
   }
-  
-  public void testObjectEquals() {
-    Object object = new Object();
-    operator.setValue(object);
-    
-    assertTrue(operator.apply(message, object));
-  }
-  
-  public void testObjectnotEquals() {
-    Object object = new Object();
-    operator.setValue(object);
-    
-    assertFalse(operator.apply(message, new Object()));
-  }
-  
+
   public void testStringEquals() {
     String object = new String("test");
     operator.setValue(object);
