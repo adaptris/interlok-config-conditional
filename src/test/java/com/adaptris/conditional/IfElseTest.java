@@ -48,8 +48,8 @@ public class IfElseTest  extends ServiceCase {
     elseService.setService(mockElseService);
     
     logicalExpression = new IfElse();
-    logicalExpression.setThenService(thenService);
-    logicalExpression.setElseService(elseService);
+    logicalExpression.setThen(thenService);
+    logicalExpression.setOtherwise(elseService);
     logicalExpression.setCondition(mockCondition);
     
     message = DefaultMessageFactory.getDefaultInstance().newMessage();
@@ -64,7 +64,7 @@ public class IfElseTest  extends ServiceCase {
   }
   
   public void testNoThenService() throws Exception {
-    logicalExpression.getThenService().setService(new NoOpService());
+    logicalExpression.getThen().setService(new NoOpService());
     
     when(mockCondition.evaluate(message))
         .thenReturn(true);
@@ -79,7 +79,7 @@ public class IfElseTest  extends ServiceCase {
   }
   
   public void testNoElseService() throws Exception {
-    logicalExpression.getElseService().setService(new NoOpService());
+    logicalExpression.getOtherwise().setService(new NoOpService());
     
     when(mockCondition.evaluate(message))
         .thenReturn(true);
@@ -171,8 +171,8 @@ public class IfElseTest  extends ServiceCase {
     elseSrvc.setService(new LogMessageService());
     
     logicalExpression.setCondition(conditionAnd);
-    logicalExpression.setThenService(thenSrvc);
-    logicalExpression.setElseService(elseSrvc);
+    logicalExpression.setThen(thenSrvc);
+    logicalExpression.setOtherwise(elseSrvc);
     
  // We init and start the service in the setup, lets stop it.
     try {

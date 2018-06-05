@@ -40,7 +40,7 @@ public class WhileTest extends ServiceCase {
     thenService.setService(mockService);
     
     logicalExpression = new While();
-    logicalExpression.setThenService(thenService);
+    logicalExpression.setThen(thenService);
     logicalExpression.setCondition(mockCondition);
     
     message = DefaultMessageFactory.getDefaultInstance().newMessage();
@@ -162,7 +162,7 @@ public class WhileTest extends ServiceCase {
     thenSrvc.setService(new LogMessageService());
     
     logicalExpression.setCondition(conditionOr);
-    logicalExpression.setThenService(thenSrvc);
+    logicalExpression.setThen(thenSrvc);
     
     // We init and start the service in the setup, lets stop it.
     try {

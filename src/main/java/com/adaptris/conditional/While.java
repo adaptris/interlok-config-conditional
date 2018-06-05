@@ -27,7 +27,7 @@ public class While extends ServiceImp {
   private Condition condition;
   
   @NotNull
-  private ThenService thenService;
+  private ThenService then;
 
   @InputFieldDefault("10")
   private Integer maxLoops;
@@ -44,7 +44,7 @@ public class While extends ServiceImp {
       
       while(this.getCondition().evaluate(msg)) {
         log.trace("Logical 'IF' evaluated to true on WHILE test, running service.");
-        getThenService().getService().doService(msg);
+        getThen().getService().doService(msg);
         
         loopCount ++;
         if((this.getMaxLoops() > 0) && (loopCount >= this.getMaxLoops())) {
@@ -64,27 +64,27 @@ public class While extends ServiceImp {
   public void prepare() throws CoreException {
     if(this.getCondition() == null)
       throw new CoreException("No condition has been set for logical 'IF'");
-    this.getThenService().prepare();
+    this.getThen().prepare();
   }
 
   @Override
   protected void initService() throws CoreException {
-    this.getThenService().init();
+    this.getThen().init();
   }
 
   @Override
   protected void closeService() {
-    this.getThenService().close();
+    this.getThen().close();
   }
   
   @Override
   public void start() throws CoreException {
-    this.getThenService().start();
+    this.getThen().start();
   }
   
   @Override
   public void stop() {
-    this.getThenService().stop();
+    this.getThen().stop();
   }
   
 
@@ -96,12 +96,12 @@ public class While extends ServiceImp {
     this.condition = condition;
   }
 
-  public ThenService getThenService() {
-    return thenService;
+  public ThenService getThen() {
+    return then;
   }
 
-  public void setThenService(ThenService ifTrueService) {
-    this.thenService = ifTrueService;
+  public void setThen(ThenService ifTrueService) {
+    this.then = ifTrueService;
   }
   
   public Integer getMaxLoops() {
