@@ -13,6 +13,13 @@ import com.adaptris.core.CoreException;
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 import com.thoughtworks.xstream.annotations.XStreamImplicit;
 
+/**
+ * <p>
+ * This {@link Condition} allows you to configure a list of child {@link Condition}'s where only one has to evaluate to "true".
+ * </p>
+ * @author amcgrath
+ *
+ */
 @XStreamAlias("or")
 @AdapterComponent
 @ComponentProfile(summary = "Allows you to test multiple conditions, where only one has to return true.", tag = "condition,service")

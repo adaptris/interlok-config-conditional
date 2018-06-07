@@ -10,10 +10,29 @@ import com.adaptris.annotation.ComponentProfile;
 import com.adaptris.annotation.InputFieldDefault;
 import com.adaptris.core.AdaptrisMessage;
 import com.adaptris.core.CoreException;
+import com.adaptris.core.Service;
 import com.adaptris.core.ServiceException;
 import com.adaptris.core.ServiceImp;
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 
+/**
+ * <p>
+ * This {@link Service} allows you to test boolean (true or false) {@link Condition}'s, which if evaluate to "true" will run a configured set of services continuously until the configured conditions do not evaluate to true.
+ * </p>
+ * <p>
+ * You can also set a value for the maximum amount of times your services will run regardless of whether your conditions continue to evaluate to true. <br/>
+ * <pre>
+ *  <max-loops>5</max-loops>
+ * </pre>
+ * The default value for the max-loops is 10.  Setting this value to 0, will loop forever until your configured conditions evaluate to false.
+ * </p>
+ * <p>
+ * Typically your {@link Condition} will test for equality, in-line expressions or whether values exist or not.  The values to test will generally come from the payload or message metadata. <br/>
+ * Also note that some conditions can be nested, such that you can test that a value is equal to another AND / OR a value is equal/not to another value.
+ * </p>
+ * @author aaron
+ *
+ */
 @XStreamAlias("while")
 @AdapterComponent
 @ComponentProfile(summary = "Runs the configured service/list repeatedly 'WHILE' the configured condition is met.", tag = "service, conditional")

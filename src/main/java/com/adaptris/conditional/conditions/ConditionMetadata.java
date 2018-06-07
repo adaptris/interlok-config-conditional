@@ -15,6 +15,13 @@ import com.adaptris.core.AdaptrisMessage;
 import com.adaptris.core.CoreException;
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 
+/**
+ * <p>
+ * This {@link Condition} targets message metadata.  All you need do is choose an {@link Operator} to apply the conditional test.
+ * </p>
+ * @author amcgrath
+ *
+ */
 @XStreamAlias("metadata")
 @AdapterComponent
 @ComponentProfile(summary = "Tests a metadata key against a configured operator.", tag = "condition,metadata")

@@ -9,10 +9,25 @@ import com.adaptris.annotation.AdapterComponent;
 import com.adaptris.annotation.ComponentProfile;
 import com.adaptris.core.AdaptrisMessage;
 import com.adaptris.core.CoreException;
+import com.adaptris.core.Service;
 import com.adaptris.core.ServiceException;
 import com.adaptris.core.ServiceImp;
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 
+/**
+ * <p>
+ * This {@link Service} allows you to test boolean (true or false) {@link Condition}'s, which if evaluate to "true" will run a configured set of services, otherwise run a different set of services.
+ * </p>
+ * <p>
+ * Note, that although you must specify a service or list of services should the configured conditions pass, you do not have to configure services to run should the conditions fail.
+ * </p>
+ * <p>
+ * Typically your {@link Condition} will test for equality, in-line expressions or whether values exist or not.  The values to test will generally come from the payload or message metadata. <br/>
+ * Also note that some conditions can be nested, such that you can test that a value is equal to another AND / OR a value is equal/not to another value.
+ * </p>
+ * @author aaron
+ *
+ */
 @XStreamAlias("if-then-otherwise")
 @AdapterComponent
 @ComponentProfile(summary = "Runs the configured service/list 'IF' the configured condition is met, otherwise will run the 'else' service/list.", tag = "service, conditional")
@@ -26,7 +41,6 @@ public class IfElse extends ServiceImp {
   @NotNull
   private ThenService then;
   
-  @NotNull
   private ElseService otherwise;
   
   public IfElse() {
@@ -43,7 +57,7 @@ public class IfElse extends ServiceImp {
         log.trace("Logical 'IF' evaluated to true, running service.");
         this.getThen().getService().doService(msg);
       } else {
-        log.trace("Logical 'IF' evaluated to false, running 'else' service.");
+        log.trace("Logical 'IF' evaluated to false, running 'otherwise' service.");
         this.getOtherwise().getService().doService(msg);
       }
     } catch (CoreException e) {

@@ -11,6 +11,13 @@ import com.adaptris.core.CoreException;
 import com.adaptris.core.Service;
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 
+/**
+ * <p>
+ * This service holder is used to hold the service or list of services that will be executed by logical expressions, such as {@link IfElse} should configured {@link Condition}'s NOT pass.
+ * </p>>
+ * @author amcgrath
+ *
+ */
 @XStreamAlias("else")
 @AdapterComponent
 @ComponentProfile(summary = "A service/list that should be executed after conditions have NOT been met. ", tag = "service, conditional")

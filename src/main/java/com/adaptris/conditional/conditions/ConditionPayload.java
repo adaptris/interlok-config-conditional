@@ -13,9 +13,16 @@ import com.adaptris.core.AdaptrisMessage;
 import com.adaptris.core.CoreException;
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 
+/**
+ * <p>
+ * This {@link Condition} targets the message payload.  All you need do is choose an {@link Operator} to apply the conditional test.
+ * </p>
+ * @author amcgrath
+ *
+ */
 @XStreamAlias("payload")
 @AdapterComponent
-@ComponentProfile(summary = "Tests a payload against a configured operator.", tag = "condition,service,payload")
+@ComponentProfile(summary = "Tests a payload against a configured operator.", tag = "condition,payload")
 @DisplayOrder(order = {"operator"})
 public class ConditionPayload implements Condition {
   
