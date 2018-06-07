@@ -7,6 +7,7 @@ import org.slf4j.LoggerFactory;
 
 import com.adaptris.annotation.AdapterComponent;
 import com.adaptris.annotation.ComponentProfile;
+import com.adaptris.annotation.DisplayOrder;
 import com.adaptris.annotation.InputFieldDefault;
 import com.adaptris.core.AdaptrisMessage;
 import com.adaptris.core.CoreException;
@@ -36,6 +37,7 @@ import com.thoughtworks.xstream.annotations.XStreamAlias;
 @XStreamAlias("while")
 @AdapterComponent
 @ComponentProfile(summary = "Runs the configured service/list repeatedly 'WHILE' the configured condition is met.", tag = "service, conditional")
+@DisplayOrder(order = {"condition,then,maxLoops"})
 public class While extends ServiceImp {
   
   protected transient Logger log = LoggerFactory.getLogger(this.getClass().getName());

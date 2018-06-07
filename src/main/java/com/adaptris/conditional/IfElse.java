@@ -7,6 +7,7 @@ import org.slf4j.LoggerFactory;
 
 import com.adaptris.annotation.AdapterComponent;
 import com.adaptris.annotation.ComponentProfile;
+import com.adaptris.annotation.DisplayOrder;
 import com.adaptris.core.AdaptrisMessage;
 import com.adaptris.core.CoreException;
 import com.adaptris.core.Service;
@@ -31,6 +32,7 @@ import com.thoughtworks.xstream.annotations.XStreamAlias;
 @XStreamAlias("if-then-otherwise")
 @AdapterComponent
 @ComponentProfile(summary = "Runs the configured service/list 'IF' the configured condition is met, otherwise will run the 'else' service/list.", tag = "service, conditional")
+@DisplayOrder(order = {"condition,then,otherwise"})
 public class IfElse extends ServiceImp {
   
   protected transient Logger log = LoggerFactory.getLogger(this.getClass().getName());
