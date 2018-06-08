@@ -168,7 +168,7 @@ publishing {
       pom.withXml {
         asNode().appendNode("description", "Perform logical expression evaluations within Interlok configuration")
         def properties = asNode().appendNode("properties")
-        properties.appendNode("target", "3.6.6+")
+        properties.appendNode("target", "3.7.3+")
       }
     }
   }
