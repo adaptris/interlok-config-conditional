@@ -47,26 +47,26 @@ import com.thoughtworks.xstream.annotations.XStreamAlias;
  */
 @XStreamAlias("if-then-otherwise")
 @AdapterComponent
-@ComponentProfile(summary = "Runs the configured service/list 'IF' the configured condition is met, otherwise will run the 'else' service/list.", tag = "service, conditional")
-@DisplayOrder(order = {"condition,then,otherwise"})
+@ComponentProfile(summary = "Runs the configured service/list 'IF' the configured condition is met, otherwise will run the 'else' service/list.", tag = "service, conditional", since="3.7.3")
+@DisplayOrder(order = {"condition", "then","otherwise"})
 public class IfElse extends ServiceImp {
-  
+
   protected transient Logger log = LoggerFactory.getLogger(this.getClass().getName());
 
   @NotNull
   private Condition condition;
-  
+
   @NotNull
   private ThenService then;
-  
+
   private ElseService otherwise;
-  
+
   public IfElse() {
     this.setThen(new ThenService());
     this.setOtherwise(new ElseService());
   }
-  
-  
+
+
   @Override
   public void doService(AdaptrisMessage msg) throws ServiceException {
     try {
@@ -81,7 +81,7 @@ public class IfElse extends ServiceImp {
     } catch (CoreException e) {
       throw new ServiceException(e);
     }
-    
+
   }
 
   @Override
@@ -103,19 +103,19 @@ public class IfElse extends ServiceImp {
     this.getThen().close();
     this.getOtherwise().close();
   }
-  
+
   @Override
   public void start() throws CoreException {
     this.getThen().start();
     this.getOtherwise().start();
   }
-  
+
   @Override
   public void stop() {
     this.getThen().stop();
     this.getOtherwise().stop();
   }
-  
+
 
   public Condition getCondition() {
     return condition;
