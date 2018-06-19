@@ -16,6 +16,7 @@
 
 package com.adaptris.conditional;
 
+import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 
 import org.slf4j.Logger;
@@ -54,11 +55,14 @@ public class IfElse extends ServiceImp {
   protected transient Logger log = LoggerFactory.getLogger(this.getClass().getName());
 
   @NotNull
+  @Valid
   private Condition condition;
 
   @NotNull
+  @Valid
   private ThenService then;
 
+  @Valid
   private ElseService otherwise;
 
   public IfElse() {

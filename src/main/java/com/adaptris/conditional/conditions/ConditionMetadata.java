@@ -16,6 +16,9 @@
 
 package com.adaptris.conditional.conditions;
 
+import javax.validation.Valid;
+import javax.validation.constraints.NotNull;
+
 import org.apache.commons.lang3.StringUtils;
 import org.hibernate.validator.constraints.NotBlank;
 import org.slf4j.Logger;
@@ -50,7 +53,8 @@ public class ConditionMetadata implements Condition {
   @AffectsMetadata
   private String metadataKey;
   
-  @NotBlank
+  @NotNull
+  @Valid
   private Operator operator;
   
   @Override

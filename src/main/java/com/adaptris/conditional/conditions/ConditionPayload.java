@@ -16,7 +16,9 @@
 
 package com.adaptris.conditional.conditions;
 
-import org.hibernate.validator.constraints.NotBlank;
+import javax.validation.Valid;
+import javax.validation.constraints.NotNull;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -44,7 +46,8 @@ public class ConditionPayload implements Condition {
   
   protected transient Logger log = LoggerFactory.getLogger(this.getClass().getName());
   
-  @NotBlank
+  @NotNull
+  @Valid
   private Operator operator;
   
   @Override

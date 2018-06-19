@@ -19,6 +19,7 @@ package com.adaptris.conditional.conditions;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 
 import com.adaptris.annotation.AdapterComponent;
@@ -43,6 +44,7 @@ public class ConditionOr implements Condition {
   
   @NotNull
   @XStreamImplicit(itemFieldName = "condition")
+  @Valid
   private List<Condition> conditions;
 
   public ConditionOr() {

@@ -16,6 +16,7 @@
 
 package com.adaptris.conditional;
 
+import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 
 import org.slf4j.Logger;
@@ -61,9 +62,11 @@ public class While extends ServiceImp {
   private static final int DEFAULT_MAX_LOOPS = 10;
   
   @NotNull
+  @Valid
   private Condition condition;
   
   @NotNull
+  @Valid
   private ThenService then;
 
   @InputFieldDefault("10")

@@ -16,14 +16,15 @@
 
 package com.adaptris.conditional;
 
+import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 
 import com.adaptris.annotation.AdapterComponent;
 import com.adaptris.annotation.ComponentProfile;
-import com.adaptris.conditional.service.NoOpService;
 import com.adaptris.core.ComponentLifecycle;
 import com.adaptris.core.ComponentLifecycleExtension;
 import com.adaptris.core.CoreException;
+import com.adaptris.core.NullService;
 import com.adaptris.core.Service;
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 
@@ -40,10 +41,11 @@ import com.thoughtworks.xstream.annotations.XStreamAlias;
 public class ElseService implements ComponentLifecycle, ComponentLifecycleExtension {
 
   @NotNull
+  @Valid
   private Service service;
   
   public ElseService() {
-    this.setService(new NoOpService());
+    this.setService(new NullService());
   }
   
   @Override

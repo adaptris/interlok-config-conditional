@@ -30,10 +30,10 @@ import com.adaptris.conditional.conditions.ConditionMetadata;
 import com.adaptris.conditional.conditions.ConditionOr;
 import com.adaptris.conditional.operator.Equals;
 import com.adaptris.conditional.operator.NotNull;
-import com.adaptris.conditional.service.NoOpService;
 import com.adaptris.core.AdaptrisMessage;
 import com.adaptris.core.CoreException;
 import com.adaptris.core.DefaultMessageFactory;
+import com.adaptris.core.NullService;
 import com.adaptris.core.Service;
 import com.adaptris.core.ServiceCase;
 import com.adaptris.core.ServiceException;
@@ -82,7 +82,7 @@ public class IfElseTest  extends ServiceCase {
   }
   
   public void testNoThenService() throws Exception {
-    logicalExpression.getThen().setService(new NoOpService());
+    logicalExpression.getThen().setService(new NullService());
     
     when(mockCondition.evaluate(message))
         .thenReturn(true);
@@ -97,7 +97,7 @@ public class IfElseTest  extends ServiceCase {
   }
   
   public void testNoElseService() throws Exception {
-    logicalExpression.getOtherwise().setService(new NoOpService());
+    logicalExpression.getOtherwise().setService(new NullService());
     
     when(mockCondition.evaluate(message))
         .thenReturn(true);
