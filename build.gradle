@@ -71,7 +71,7 @@ dependencies {
   compile ("org.slf4j:slf4j-api:$slf4jVersion")
   compile ("org.json:json:20160810")
   compile ("com.adaptris:interlok-expressions:$adpCoreVersion") { changing= true}
-  
+
   annotationProcessor ("com.adaptris:interlok-common:$adpCoreVersion") {changing= true}
 
   testCompile ('junit:junit:4.12')
@@ -112,6 +112,8 @@ task generateVersion {
     ant.propertyfile(file: versionFile) {
       entry(key: 'component.name', value: componentName)
       entry(key: 'build.version', value: releaseVersion)
+      entry(key: 'groupId', value: "com.adaptris")
+      entry(key: 'artifactId', value: project.name)
       entry(key: 'build.date', value: new Date().format('yyyy-MM-dd'))
     }
   }
@@ -169,6 +171,8 @@ publishing {
         asNode().appendNode("description", "Perform logical expression evaluations within Interlok configuration")
         def properties = asNode().appendNode("properties")
         properties.appendNode("target", "3.7.3+")
+        properties.appendNode("license", "false")
+        properties.appendNode("tags", "if,conditional")
       }
     }
   }
