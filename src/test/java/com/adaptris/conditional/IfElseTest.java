@@ -26,6 +26,7 @@ import org.mockito.MockitoAnnotations;
 
 import com.adaptris.conditional.conditions.ConditionAnd;
 import com.adaptris.conditional.conditions.ConditionExpression;
+import com.adaptris.conditional.conditions.ConditionFunction;
 import com.adaptris.conditional.conditions.ConditionMetadata;
 import com.adaptris.conditional.conditions.ConditionOr;
 import com.adaptris.conditional.operator.Equals;
@@ -72,13 +73,13 @@ public class IfElseTest  extends ServiceCase {
     
     message = DefaultMessageFactory.getDefaultInstance().newMessage();
     
-    this.startMe(logicalExpression);
+    LifecycleHelper.initAndStart(logicalExpression);
     
     this.setBaseDir("build/example-xml");
   }
   
   public void tearDown() throws Exception {
-    this.StopMe(logicalExpression);
+    LifecycleHelper.stopAndClose(logicalExpression);
   }
   
   public void testNoThenService() throws Exception {
@@ -88,8 +89,8 @@ public class IfElseTest  extends ServiceCase {
         .thenReturn(true);
 
     // purely to re-initiate the NoOpService
-    this.StopMe(logicalExpression);
-    this.startMe(logicalExpression);
+    LifecycleHelper.stopAndClose(logicalExpression);
+    LifecycleHelper.initAndStart(logicalExpression);
     
     logicalExpression.doService(message);
     
@@ -103,8 +104,8 @@ public class IfElseTest  extends ServiceCase {
         .thenReturn(true);
 
     // purely to re-initiate the NoOpService
-    this.StopMe(logicalExpression);
-    this.startMe(logicalExpression);
+    LifecycleHelper.stopAndClose(logicalExpression);
+    LifecycleHelper.initAndStart(logicalExpression);
     
     logicalExpression.doService(message);
     
@@ -146,28 +147,18 @@ public class IfElseTest  extends ServiceCase {
   }
   
   public void testNoConditionSet() throws Exception {
-    logicalExpression.setCondition(null);
     try {
-      logicalExpression.prepare();
+      LifecycleHelper.initAndStart(new IfElse());
       fail("Expected an exception because the condition is null");
     } catch (CoreException ex) {
       // expected
     }
     
   }
-  
-  private void startMe(Service service) throws Exception {
-    LifecycleHelper.init(service);
-    LifecycleHelper.start(service);
-  }
-  
-  private void StopMe(Service service) throws Exception {
-    LifecycleHelper.stop(service);
-    LifecycleHelper.close(service);
-  }
 
   @Override
   protected Object retrieveObjectForSampleConfig() {
+    IfElse result = new IfElse();
     ConditionMetadata condition = new ConditionMetadata();
     condition.setMetadataKey("key1");
     condition.setOperator(new NotNull());
@@ -187,23 +178,19 @@ public class IfElseTest  extends ServiceCase {
     ConditionAnd conditionAnd = new ConditionAnd();
     conditionAnd.getConditions().add(condition);
     conditionAnd.getConditions().add(conditionOr);
-    
+    conditionAnd.getConditions().add(
+        new ConditionFunction("function evaluateScript(message) { return message.getMetadataValue('mykey').equals('myvalue');}"));
     ThenService thenSrvc = new ThenService();
     ElseService elseSrvc = new ElseService();
     
     thenSrvc.setService(new LogMessageService());
     elseSrvc.setService(new LogMessageService());
     
-    logicalExpression.setCondition(conditionAnd);
-    logicalExpression.setThen(thenSrvc);
-    logicalExpression.setOtherwise(elseSrvc);
+    result.getCondition().add(conditionAnd);
+    result.setThen(thenSrvc);
+    result.setOtherwise(elseSrvc);
+
     
- // We init and start the service in the setup, lets stop it.
-    try {
-      this.StopMe(logicalExpression);
-    } catch (Exception e) {}
-    
-    
-    return logicalExpression;
+    return result;
   }
 }

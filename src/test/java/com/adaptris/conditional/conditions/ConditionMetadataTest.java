@@ -16,26 +16,43 @@
 
 package com.adaptris.conditional.conditions;
 
-import com.adaptris.conditional.operator.Null;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+
 import com.adaptris.conditional.operator.NotNull;
+import com.adaptris.conditional.operator.Null;
 import com.adaptris.core.AdaptrisMessage;
+import com.adaptris.core.CoreException;
 import com.adaptris.core.DefaultMessageFactory;
+import com.adaptris.core.util.LifecycleHelper;
 
-import junit.framework.TestCase;
-
-public class ConditionMetadataTest extends TestCase {
+public class ConditionMetadataTest {
   
   private ConditionMetadata condition;
   private AdaptrisMessage message;
   
+  @Before
   public void setUp() throws Exception {
     message = DefaultMessageFactory.getDefaultInstance().newMessage();
     condition = new ConditionMetadata();
+    LifecycleHelper.initAndStart(condition);
   }
 
+  @After
   public void tearDown() throws Exception {
+    LifecycleHelper.stopAndClose(condition);
   }
-  
+
+  @Test(expected = CoreException.class)
+  public void testNoOperator() throws Exception {
+    condition.operator();
+  }
+
+  @Test
   public void testMetadataExists() throws Exception {
     condition.setMetadataKey("key1");
     condition.setOperator(new NotNull());
@@ -44,6 +61,7 @@ public class ConditionMetadataTest extends TestCase {
     assertTrue(condition.evaluate(message));
   }
   
+  @Test
   public void testMetadataDoesNotExist() throws Exception {
     condition.setMetadataKey("key1");
     condition.setOperator(new Null());
@@ -51,6 +69,7 @@ public class ConditionMetadataTest extends TestCase {
     assertTrue(condition.evaluate(message));
   }
   
+  @Test
   public void testMetadataNotSet() throws Exception {
     assertFalse(condition.evaluate(message));
   }

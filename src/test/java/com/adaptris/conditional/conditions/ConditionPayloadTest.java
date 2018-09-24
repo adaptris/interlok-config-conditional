@@ -16,26 +16,42 @@
 
 package com.adaptris.conditional.conditions;
 
+import static org.junit.Assert.assertTrue;
+
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+
 import com.adaptris.conditional.operator.NotNull;
 import com.adaptris.conditional.operator.Null;
 import com.adaptris.core.AdaptrisMessage;
+import com.adaptris.core.CoreException;
 import com.adaptris.core.DefaultMessageFactory;
+import com.adaptris.core.util.LifecycleHelper;
 
-import junit.framework.TestCase;
-
-public class ConditionPayloadTest extends TestCase {
+public class ConditionPayloadTest {
   
   private ConditionPayload condition;
   private AdaptrisMessage message;
   
+  @Before
   public void setUp() throws Exception {
     message = DefaultMessageFactory.getDefaultInstance().newMessage();
     condition = new ConditionPayload();
+    LifecycleHelper.initAndStart(condition);
   }
 
+  @After
   public void tearDown() throws Exception {
+    LifecycleHelper.stopAndClose(condition);
   }
-  
+
+  @Test(expected = CoreException.class)
+  public void testNoOperator() throws Exception {
+    condition.operator();
+  }
+
+  @Test
   public void testPayloadExists() throws Exception {
     condition.setOperator(new NotNull());
     message.setContent("some content", message.getContentEncoding());
@@ -43,6 +59,7 @@ public class ConditionPayloadTest extends TestCase {
     assertTrue(condition.evaluate(message));
   }
   
+  @Test
   public void testPayloadDoesNotExist() throws Exception {
     condition.setOperator(new Null());
     

@@ -16,25 +16,37 @@
 
 package com.adaptris.conditional.conditions;
 
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
+
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+
 import com.adaptris.core.AdaptrisMessage;
 import com.adaptris.core.DefaultMessageFactory;
 import com.adaptris.core.ServiceException;
+import com.adaptris.core.util.LifecycleHelper;
 
-import junit.framework.TestCase;
-
-public class ConditionExpressionTest extends TestCase {
+public class ConditionExpressionTest {
 
   private ConditionExpression condition;
   private AdaptrisMessage message;
   
+  @Before
   public void setUp() throws Exception {
     message = DefaultMessageFactory.getDefaultInstance().newMessage();
     condition = new ConditionExpression();
+    LifecycleHelper.initAndStart(condition);
   }
 
+  @After
   public void tearDown() throws Exception {
+    LifecycleHelper.stopAndClose(condition);
   }
+
   
+  @Test
   public void testMetadataExists() throws Exception {
     condition.setAlgorithm("%message{key1} > %message{key2}");
     message.addMessageHeader("key1", "10");
@@ -43,6 +55,7 @@ public class ConditionExpressionTest extends TestCase {
     assertTrue(condition.evaluate(message));
   }
   
+  @Test
   public void testMetadataDoesNotExist() throws Exception {
     condition.setAlgorithm("%message{key1} == 10");
     try {

@@ -16,6 +16,9 @@
 
 package com.adaptris.conditional;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 
@@ -30,7 +33,11 @@ import com.adaptris.core.CoreException;
 import com.adaptris.core.Service;
 import com.adaptris.core.ServiceException;
 import com.adaptris.core.ServiceImp;
+import com.adaptris.core.util.Args;
+import com.adaptris.core.util.ExceptionHelper;
+import com.adaptris.core.util.LifecycleHelper;
 import com.thoughtworks.xstream.annotations.XStreamAlias;
+import com.thoughtworks.xstream.annotations.XStreamImplicit;
 
 /**
  * <p>
@@ -56,7 +63,8 @@ public class IfElse extends ServiceImp {
 
   @NotNull
   @Valid
-  private Condition condition;
+  @XStreamImplicit
+  private List<Condition> condition;
 
   @NotNull
   @Valid
@@ -66,6 +74,7 @@ public class IfElse extends ServiceImp {
   private ElseService otherwise;
 
   public IfElse() {
+    this.setCondition(new ArrayList<>());
     this.setThen(new ThenService());
     this.setOtherwise(new ElseService());
   }
@@ -74,8 +83,8 @@ public class IfElse extends ServiceImp {
   @Override
   public void doService(AdaptrisMessage msg) throws ServiceException {
     try {
-      log.trace("Running logical 'IF', with condition class {}", this.getCondition().getClass().getSimpleName());
-      if(this.getCondition().evaluate(msg)) {
+      log.trace("Running logical 'IF', with condition class {}", this.condition().getClass().getSimpleName());
+      if (this.condition().evaluate(msg)) {
         log.trace("Logical 'IF' evaluated to true, running service.");
         this.getThen().getService().doService(msg);
       } else {
@@ -90,43 +99,73 @@ public class IfElse extends ServiceImp {
 
   @Override
   public void prepare() throws CoreException {
-    if(this.getCondition() == null)
-      throw new CoreException("No condition has been set for logical 'IF'");
-    this.getThen().prepare();
-    this.getOtherwise().prepare();
+    try {
+      Args.notNull(condition(), "condition");
+      LifecycleHelper.prepare(condition());
+      LifecycleHelper.prepare(getThen());
+      LifecycleHelper.prepare(getOtherwise());
+    } catch (Exception e) {
+      throw ExceptionHelper.wrapCoreException(e);
+    }
   }
 
   @Override
   protected void initService() throws CoreException {
-    this.getThen().init();
-    this.getOtherwise().init();
+    LifecycleHelper.init(condition());
+    LifecycleHelper.init(getThen());
+    LifecycleHelper.init(getOtherwise());
   }
 
   @Override
   protected void closeService() {
-    this.getThen().close();
-    this.getOtherwise().close();
+    LifecycleHelper.close(condition());
+    LifecycleHelper.close(getThen());
+    LifecycleHelper.close(getOtherwise());
   }
 
   @Override
   public void start() throws CoreException {
-    this.getThen().start();
-    this.getOtherwise().start();
+    LifecycleHelper.start(condition());
+    LifecycleHelper.start(getThen());
+    LifecycleHelper.start(getOtherwise());
   }
 
   @Override
   public void stop() {
-    this.getThen().stop();
-    this.getOtherwise().stop();
+    LifecycleHelper.stop(condition());
+    LifecycleHelper.stop(getThen());
+    LifecycleHelper.stop(getOtherwise());
   }
 
 
-  public Condition getCondition() {
+  public List<Condition> getCondition() {
     return condition;
   }
 
+  /**
+   * Set the conditions to apply.
+   * 
+   * <p>
+   * Note that although this is a list, only the <strong>first</strong> condition is evaluated. It is a list so that the generated
+   * XML is more natural via {@code XStreamImplicit}.
+   * </p>
+   * 
+   * @param condition
+   */
+  public void setCondition(List<Condition> condition) {
+    this.condition = Args.notNull(condition, "condition");
+  }
+
   public void setCondition(Condition condition) {
-    this.condition = condition;
+    getCondition().add(Args.notNull(condition, "condition"));
+  }
+
+  protected Condition condition() {
+    List<Condition> c = getCondition();
+    if (c.size() == 0) {
+      return null;
+    }
+    return c.get(0);
   }
 
   public ThenService getThen() {

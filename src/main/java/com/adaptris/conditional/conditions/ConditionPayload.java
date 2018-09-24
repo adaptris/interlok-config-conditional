@@ -16,12 +16,6 @@
 
 package com.adaptris.conditional.conditions;
 
-import javax.validation.Valid;
-import javax.validation.constraints.NotNull;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.adaptris.annotation.AdapterComponent;
 import com.adaptris.annotation.ComponentProfile;
 import com.adaptris.annotation.DisplayOrder;
@@ -42,27 +36,11 @@ import com.thoughtworks.xstream.annotations.XStreamAlias;
 @AdapterComponent
 @ComponentProfile(summary = "Tests a payload against a configured operator.", tag = "condition,payload")
 @DisplayOrder(order = {"operator"})
-public class ConditionPayload implements Condition {
-  
-  protected transient Logger log = LoggerFactory.getLogger(this.getClass().getName());
-  
-  @NotNull
-  @Valid
-  private Operator operator;
+public class ConditionPayload extends ConditionWithOperator {
   
   @Override
   public boolean evaluate(AdaptrisMessage message) throws CoreException {
     log.trace("Testing payload condition");
-      
-    return this.getOperator().apply(message, message.getContent());
+    return operator().apply(message, message.getContent());
   }
-
-  public Operator getOperator() {
-    return operator;
-  }
-
-  public void setOperator(Operator operator) {
-    this.operator = operator;
-  }
-
 }
