@@ -21,6 +21,7 @@ import java.util.List;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -64,6 +65,7 @@ public class IfElse extends ServiceImp {
   @NotNull
   @Valid
   @XStreamImplicit
+  @Size(min=1,max=1)
   private List<Condition> condition;
 
   @NotNull

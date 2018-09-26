@@ -5,6 +5,7 @@ import java.util.List;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 
 import com.adaptris.conditional.Operator;
 import com.adaptris.core.CoreException;
@@ -16,6 +17,7 @@ public abstract class ConditionWithOperator extends ConditionImpl {
   @NotNull
   @XStreamImplicit
   @Valid
+  @Size(min=1,max=1)
   private List<Operator> operator;
 
   public ConditionWithOperator() {
