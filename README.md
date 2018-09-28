@@ -3,10 +3,10 @@
 Because you know you want to do this; though that's a lot of nested conditions.
 
 ```
-  <if-then-otherwise>
-   <and>
+ <if-then-otherwise>
+   <condition class="and">
     <metadata>
-     <not-null/>
+     <operator class="not-null"/>
      <metadata-key>key1</metadata-key>
     </metadata>
     <or>
@@ -14,32 +14,32 @@ Because you know you want to do this; though that's a lot of nested conditions.
       <algorithm>(%message{key1} - 10) == %message{key2}</algorithm>
      </expression>
      <metadata>
-      <equals>
-       <value>myValue</value>
-      </equals>
+      <operator class="equals">
+        <value>myValue</value>
+      </operator>
       <metadata-key>key2</metadata-key>
      </metadata>
     </or>
     <function>
-     <definition><![CDATA[function evaluateScript(message) { return message.getMetadataValue('mykey').equals('myvalue');}]]></definition>
+      <definition><![CDATA[function evaluateScript(message) { return message.getMetadataValue('mykey').equals('myvalue');}]]></definition>
     </function>
-   </and>
+   </condition>
    <then>
     <service class="log-message-service">
-     <unique-id>9d95cd07-a320-44a9-b0e0-d33c5d2a43f1</unique-id>
+     <unique-id>26eab97b-9612-46e4-9c28-6c9536b07f16</unique-id>
      <log-level>DEBUG</log-level>
     </service>
    </then>
    <otherwise>
     <service class="log-message-service">
-     <unique-id>43de299a-ea19-4c8a-86a1-7d560ada3e81</unique-id>
+     <unique-id>f94026b4-fee5-4477-b927-28b1d5765dc8</unique-id>
      <log-level>DEBUG</log-level>
     </service>
    </otherwise>
   </if-then-otherwise>
 ```
 
-Which essentially boils down to : 
+Which essentially boils down to :
 
 ```
 <if-then-otherwise>
