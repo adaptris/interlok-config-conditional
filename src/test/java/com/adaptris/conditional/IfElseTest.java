@@ -186,7 +186,7 @@ public class IfElseTest  extends ServiceCase {
     thenSrvc.setService(new LogMessageService());
     elseSrvc.setService(new LogMessageService());
     
-    result.getCondition().add(conditionAnd);
+    result.setCondition(conditionAnd);
     result.setThen(thenSrvc);
     result.setOtherwise(elseSrvc);
 

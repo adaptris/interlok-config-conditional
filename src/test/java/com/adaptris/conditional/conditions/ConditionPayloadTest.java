@@ -25,7 +25,6 @@ import org.junit.Test;
 import com.adaptris.conditional.operator.NotNull;
 import com.adaptris.conditional.operator.Null;
 import com.adaptris.core.AdaptrisMessage;
-import com.adaptris.core.CoreException;
 import com.adaptris.core.DefaultMessageFactory;
 import com.adaptris.core.util.LifecycleHelper;
 
@@ -46,7 +45,7 @@ public class ConditionPayloadTest {
     LifecycleHelper.stopAndClose(condition);
   }
 
-  @Test(expected = CoreException.class)
+  @Test(expected = IllegalArgumentException.class)
   public void testNoOperator() throws Exception {
     condition.operator();
   }

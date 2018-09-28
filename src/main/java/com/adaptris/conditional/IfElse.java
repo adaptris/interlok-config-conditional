@@ -16,12 +16,8 @@
 
 package com.adaptris.conditional;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -38,7 +34,6 @@ import com.adaptris.core.util.Args;
 import com.adaptris.core.util.ExceptionHelper;
 import com.adaptris.core.util.LifecycleHelper;
 import com.thoughtworks.xstream.annotations.XStreamAlias;
-import com.thoughtworks.xstream.annotations.XStreamImplicit;
 
 /**
  * <p>
@@ -64,9 +59,7 @@ public class IfElse extends ServiceImp {
 
   @NotNull
   @Valid
-  @XStreamImplicit
-  @Size(min=1,max=1)
-  private List<Condition> condition;
+  private Condition condition;
 
   @NotNull
   @Valid
@@ -76,7 +69,6 @@ public class IfElse extends ServiceImp {
   private ElseService otherwise;
 
   public IfElse() {
-    this.setCondition(new ArrayList<>());
     this.setThen(new ThenService());
     this.setOtherwise(new ElseService());
   }
@@ -93,8 +85,8 @@ public class IfElse extends ServiceImp {
         log.trace("Logical 'IF' evaluated to false, running 'otherwise' service.");
         this.getOtherwise().getService().doService(msg);
       }
-    } catch (CoreException e) {
-      throw new ServiceException(e);
+    } catch (Exception e) {
+      throw ExceptionHelper.wrapServiceException(e);
     }
 
   }
@@ -140,34 +132,22 @@ public class IfElse extends ServiceImp {
   }
 
 
-  public List<Condition> getCondition() {
+  public Condition getCondition() {
     return condition;
   }
 
   /**
    * Set the conditions to apply.
    * 
-   * <p>
-   * Note that although this is a list, only the <strong>first</strong> condition is evaluated. It is a list so that the generated
-   * XML is more natural via {@code XStreamImplicit}.
-   * </p>
    * 
    * @param condition
    */
-  public void setCondition(List<Condition> condition) {
+  public void setCondition(Condition condition) {
     this.condition = Args.notNull(condition, "condition");
   }
 
-  public void setCondition(Condition condition) {
-    getCondition().add(Args.notNull(condition, "condition"));
-  }
-
   protected Condition condition() {
-    List<Condition> c = getCondition();
-    if (c.size() == 0) {
-      return null;
-    }
-    return c.get(0);
+    return Args.notNull(getCondition(), "condition");
   }
 
   public ThenService getThen() {
