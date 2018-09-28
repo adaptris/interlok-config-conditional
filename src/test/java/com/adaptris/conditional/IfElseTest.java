@@ -74,8 +74,6 @@ public class IfElseTest  extends ServiceCase {
     message = DefaultMessageFactory.getDefaultInstance().newMessage();
     
     LifecycleHelper.initAndStart(logicalExpression);
-    
-    this.setBaseDir("build/example-xml");
   }
   
   public void tearDown() throws Exception {

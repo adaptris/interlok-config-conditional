@@ -62,8 +62,7 @@ public class WhileTest extends ServiceCase {
     message = DefaultMessageFactory.getDefaultInstance().newMessage();
     
     this.startMe(logicalExpression);
-    
-    this.setBaseDir("build/example-xml");
+
   }
   
   public void tearDown() throws Exception {
