@@ -3,36 +3,56 @@
 Because you know you want to do this; though that's a lot of nested conditions.
 
 ```
-<if-then-otherwise>
-   <unique-id>4550829f-69ea-4b59-bc45-5a8ff35c541e</unique-id>
-   <condition class="and">
-    <condition class="metadata">
+  <if-then-otherwise>
+   <and>
+    <metadata>
+     <not-null/>
      <metadata-key>key1</metadata-key>
-     <operator class="not-null"/>
-    </condition>
-    <condition class="or">
-     <condition class="expression">
+    </metadata>
+    <or>
+     <expression>
       <algorithm>(%message{key1} - 10) == %message{key2}</algorithm>
-     </condition>
-     <condition class="metadata">
-      <metadata-key>key2</metadata-key>
-      <operator class="equals">
+     </expression>
+     <metadata>
+      <equals>
        <value>myValue</value>
-      </operator>
-     </condition>
-    </condition>
-   </condition>
+      </equals>
+      <metadata-key>key2</metadata-key>
+     </metadata>
+    </or>
+    <function>
+     <definition><![CDATA[function evaluateScript(message) { return message.getMetadataValue('mykey').equals('myvalue');}]]></definition>
+    </function>
+   </and>
    <then>
     <service class="log-message-service">
-     <unique-id>5a7b5344-a8ef-4289-a4a4-8dfc3f048b5b</unique-id>
+     <unique-id>9d95cd07-a320-44a9-b0e0-d33c5d2a43f1</unique-id>
      <log-level>DEBUG</log-level>
     </service>
    </then>
    <otherwise>
     <service class="log-message-service">
-     <unique-id>f520b0e6-dcfa-4949-9150-8506621d0bf9</unique-id>
+     <unique-id>43de299a-ea19-4c8a-86a1-7d560ada3e81</unique-id>
      <log-level>DEBUG</log-level>
     </service>
    </otherwise>
   </if-then-otherwise>
 ```
+
+Which essentially boils down to : 
+
+```
+<if-then-otherwise>
+  <some-kind-of-condition/>  // where <or> and <and> will wrap other conditions.
+  <then>
+    <service class="service-list">
+    </service>
+  </then>
+  <otherwise>
+    <service class="service-list">
+    </service>
+  </otherwise>
+</if-then-otherwise>
+```
+
+No; you don't get elseif.
