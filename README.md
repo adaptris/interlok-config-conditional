@@ -38,3 +38,21 @@ Because you know you want to do this; though that's a lot of nested conditions.
    </otherwise>
   </if-then-otherwise>
 ```
+
+Which essentially boils down to : 
+
+```
+<if-then-otherwise>
+  <some-kind-of-condition/>  // where <or> and <and> will wrap other conditions.
+  <then>
+    <service class="service-list">
+    </service>
+  </then>
+  <otherwise>
+    <service class="service-list">
+    </service>
+  </otherwise>
+</if-then-otherwise>
+```
+
+No; you don't get elseif.
