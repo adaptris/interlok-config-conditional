@@ -17,6 +17,7 @@
 package com.adaptris.conditional;
 
 import com.adaptris.core.AdaptrisMessage;
+import com.adaptris.core.ComponentLifecycle;
 import com.adaptris.core.CoreException;
 
 /**
@@ -29,7 +30,7 @@ import com.adaptris.core.CoreException;
  * @author amcgrath
  *
  */
-public interface Condition {
+public interface Condition extends ComponentLifecycle {
   
   public boolean evaluate(AdaptrisMessage message) throws CoreException;
 

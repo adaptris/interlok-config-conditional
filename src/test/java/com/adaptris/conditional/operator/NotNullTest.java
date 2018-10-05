@@ -16,27 +16,34 @@
 
 package com.adaptris.conditional.operator;
 
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+
+import org.junit.Before;
+import org.junit.Test;
+
 import com.adaptris.conditional.Operator;
 import com.adaptris.core.AdaptrisMessage;
 import com.adaptris.core.DefaultMessageFactory;
 
-import junit.framework.TestCase;
-
-public class NotNullTest extends TestCase {
+public class NotNullTest {
   
   private Operator operator;
   
   private AdaptrisMessage message;
   
+  @Before
   public void setUp() throws Exception {
     operator = new NotNull();
     message = DefaultMessageFactory.getDefaultInstance().newMessage();
   }
   
+  @Test
   public void testExists() {
     assertTrue(operator.apply(message, "1"));
   }
   
+  @Test
   public void testNotExists() {
     assertFalse(operator.apply(message, null));
   }

@@ -16,22 +16,28 @@
 
 package com.adaptris.conditional.operator;
 
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+
+import org.junit.Before;
+import org.junit.Test;
+
 import com.adaptris.core.AdaptrisMessage;
 import com.adaptris.core.DefaultMessageFactory;
 
-import junit.framework.TestCase;
-
-public class EqualsTest extends TestCase {
+public class EqualsTest {
 
   private Equals operator;
   
   private AdaptrisMessage message;
   
+  @Before
   public void setUp() throws Exception {
     operator = new Equals();
     message = DefaultMessageFactory.getDefaultInstance().newMessage();
   }
 
+  @Test
   public void testStringEquals() {
     String object = new String("test");
     operator.setValue(object);
@@ -39,6 +45,7 @@ public class EqualsTest extends TestCase {
     assertTrue(operator.apply(message, "test"));
   }
   
+  @Test
   public void testStringNotEquals() {
     String object = new String("test");
     operator.setValue(object);

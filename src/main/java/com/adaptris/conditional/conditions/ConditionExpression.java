@@ -22,6 +22,7 @@ import com.adaptris.annotation.DisplayOrder;
 import com.adaptris.conditional.Condition;
 import com.adaptris.core.AdaptrisMessage;
 import com.adaptris.core.CoreException;
+import com.adaptris.core.util.LifecycleHelper;
 import com.adaptris.expressions.FreeFormExpressionService;
 import com.adaptris.interlok.InterlokException;
 import com.adaptris.interlok.config.DataOutputParameter;
@@ -64,31 +65,30 @@ import com.thoughtworks.xstream.annotations.XStreamAlias;
 @AdapterComponent
 @ComponentProfile(summary = "Tests a static algorithm for a boolean result.", tag = "condition")
 @DisplayOrder(order = {"algorithm"})
-public class ConditionExpression implements Condition {
+public class ConditionExpression extends ConditionImpl {
   
   private String algorithm;
-  
-  protected transient FreeFormExpressionService expressionService;
-  
+
   public ConditionExpression() {
-    expressionService = new FreeFormExpressionService();
-    
   }
 
   @Override
   public boolean evaluate(AdaptrisMessage message) throws CoreException {
     final ReturnedExpressionValue expressionResult = new ReturnedExpressionValue();
-    
-    expressionService.setAlgorithm(getAlgorithm());
-    expressionService.setResult(new DataOutputParameter<String>() {
-      @Override
-      public void insert(String data, InterlokMessage msg) throws InterlokException {
-        expressionResult.value = data;
-      }
-    });
-    
-    expressionService.doService(message);
-    
+    FreeFormExpressionService expressionService = new FreeFormExpressionService();
+    try {
+      expressionService.setAlgorithm(getAlgorithm());
+      expressionService.setResult(new DataOutputParameter<String>() {
+        @Override
+        public void insert(String data, InterlokMessage msg) throws InterlokException {
+          expressionResult.value = data;
+        }
+      });
+      LifecycleHelper.initAndStart(expressionService, false);
+      expressionService.doService(message);
+    } finally {
+      LifecycleHelper.stopAndClose(expressionService, false);
+    }
     return expressionResult.value.equalsIgnoreCase("true");
   }
 
@@ -99,9 +99,10 @@ public class ConditionExpression implements Condition {
   public void setAlgorithm(String algorithm) {
     this.algorithm = algorithm;
   }
-  
+
   class ReturnedExpressionValue {
     String value = "";
   }
+
 
 }
