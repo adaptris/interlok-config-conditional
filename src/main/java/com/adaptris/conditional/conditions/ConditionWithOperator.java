@@ -22,15 +22,11 @@ public abstract class ConditionWithOperator extends ConditionImpl {
   /**
    * Set the operators to apply.
    * 
-   * <p>
-   * Note that although this is a list, only the <strong>first</strong> operator is evaluated. It is a list so that the generated
-   * XML is more natural via {@code XStreamImplicit}.
-   * </p>
    * 
-   * @param condition
+   * @param oper the operators
    */
-  public void setOperator(Operator operators) {
-    this.operator = Args.notNull(operators, "operator");
+  public void setOperator(Operator oper) {
+    this.operator = Args.notNull(oper, "operator");
   }
 
   protected Operator operator() {
