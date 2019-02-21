@@ -1,11 +1,14 @@
 ext {
   interlokCoreVersion = project.hasProperty('interlokCoreVersion') ? project.getProperty('interlokCoreVersion') : '3.8-SNAPSHOT'
   releaseVersion = project.hasProperty('releaseVersion') ? project.getProperty('releaseVersion') : '3.8-SNAPSHOT'
-  mavenPublishUrl = project.hasProperty('mavenPublishUrl') ? project.getProperty('mavenPublishUrl') : 'https://nexus.adaptris.net/nexus/content/repositories/snapshots'
+  nexusBaseUrl = project.hasProperty('nexusBaseUrl') ? project.getProperty('nexusBaseUrl') : 'https://nexus.adaptris.net/nexus'
+  mavenPublishUrl = project.hasProperty('mavenPublishUrl') ? project.getProperty('mavenPublishUrl') : nexusBaseUrl + '/content/repositories/snapshots'
+  javadocsBaseUrl = nexusBaseUrl + "/content/sites/javadocs/com/adaptris"
   repoUsername = project.hasProperty('repoUsername') ? project.getProperty('repoUsername') : 'unknown'
   repoPassword = project.hasProperty('repoPassword') ? project.getProperty('repoPassword') : 'unknown'
   defaultNexusRepo = project.hasProperty('defaultNexusRepo') ? project.getProperty('defaultNexusRepo') : 'https://repo1.maven.org/maven2/'
-  javadocsBaseUrl = "https://nexus.adaptris.net/nexus/content/sites/javadocs/com/adaptris"
+  offlineJavadocPackageDir = new File(project.buildDir, "offline-javadoc-packages")
+
   interlokJavadocs= project.hasProperty('interlokJavadocs') ? project.getProperty('interlokJavadocs') : javadocsBaseUrl + "/interlok-core/" + interlokCoreVersion
   interlokCommonJavadocs= project.hasProperty('interlokJavadocs') ? project.getProperty('interlokJavadocs') : javadocsBaseUrl + "/interlok-common/" + interlokCoreVersion
   componentName='Interlok Conditional Configuration'
@@ -33,24 +36,25 @@ group   = 'com.adaptris'
 version = releaseVersion
 def versionDir = "$buildDir/version"
 
-// In this section you declare where to find the dependencies of your project
 repositories {
+  mavenCentral()
   maven { url "$defaultNexusRepo" }
-  maven { url "https://nexus.adaptris.net/nexus/content/groups/public" }
-  maven { url "https://nexus.adaptris.net/nexus/content/repositories/snapshots" }
-  maven { url "https://nexus.adaptris.net/nexus/content/repositories/releases" }
+  maven { url "$nexusBaseUrl/content/groups/public" }
+  maven { url "$nexusBaseUrl/content/repositories/snapshots" }
+  maven { url "$nexusBaseUrl/content/repositories/releases" }
   maven {
       credentials {
         username repoUsername
         password repoPassword
       }
-      url "https://nexus.adaptris.net/nexus/content/groups/private"
+      url "$nexusBaseUrl/content/groups/private"
     }
 }
 
 
 configurations {
   javadoc {}
+  offlineJavadocPackages {}
   all*.exclude group: 'c3p0'
   all*.exclude group: 'commons-logging'
   all*.exclude group: 'javamail'
@@ -82,6 +86,8 @@ dependencies {
   testCompile ("org.mockito:mockito-all:1.10.19")
 
   javadoc("com.adaptris:interlok-core-apt:$interlokCoreVersion") { changing= true}
+  offlineJavadocPackages ("com.adaptris:interlok-core:$interlokCoreVersion:javadoc@jar") { changing= true}
+  offlineJavadocPackages ("com.adaptris:interlok-common:$interlokCoreVersion:javadoc@jar") { changing= true}
 
 }
 
@@ -118,12 +124,23 @@ task generateVersion {
   }
 }
 
+task offlinePackageList(type: Copy) {
+  description 'Build an offline package-list for javadocs'
+  group 'Documentation'
+
+  project.configurations.offlineJavadocPackages.collect { dependency ->
+    from(zipTree(dependency)) {
+      into dependency.name
+    }
+  }
+  include "package-list"
+  into offlineJavadocPackageDir
+}
+
 javadoc {
   configure(options) {
-      links = [
-        interlokJavadocs,
-        interlokCommonJavadocs,
-      ]
+    options.linksOffline(interlokJavadocs, offlineJavadocPackageDir.getCanonicalPath() + "/interlok-core-$interlokCoreVersion-javadoc.jar")
+    options.linksOffline(interlokCommonJavadocs, offlineJavadocPackageDir.getCanonicalPath() + "/interlok-common-$interlokCoreVersion-javadoc.jar")
     taglets = ["com.adaptris.taglet.ConfigTaglet", "com.adaptris.taglet.LicenseTaglet"]
     options.addStringOption "tagletpath", configurations.javadoc.asPath
     title= componentName
@@ -142,6 +159,7 @@ jacocoTestReport {
 }
 
 check.dependsOn jacocoTestReport
+javadoc.dependsOn offlinePackageList
 
 task javadocJar(type: Jar, dependsOn: javadoc) {
   classifier = 'javadoc'
