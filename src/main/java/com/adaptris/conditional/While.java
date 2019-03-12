@@ -19,9 +19,6 @@ package com.adaptris.conditional;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.adaptris.annotation.AdapterComponent;
 import com.adaptris.annotation.ComponentProfile;
 import com.adaptris.annotation.DisplayOrder;
@@ -57,8 +54,6 @@ import com.thoughtworks.xstream.annotations.XStreamAlias;
 @DisplayOrder(order = {"condition,then,maxLoops"})
 public class While extends ServiceImp {
   
-  protected transient Logger log = LoggerFactory.getLogger(this.getClass().getName());
-
   private static final int DEFAULT_MAX_LOOPS = 10;
   
   @NotNull
