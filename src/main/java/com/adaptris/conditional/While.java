@@ -105,10 +105,9 @@ public class While extends ServiceImp {
           break;
         }
       }
-      
       log.trace("Logical 'WHILE' completed, exiting.");
-    } catch (CoreException e) {
-      throw new ServiceException(e);
+    } catch (Exception e) {
+      throw ExceptionHelper.wrapServiceException(e);
     }
     
   }

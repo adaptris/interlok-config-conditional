@@ -20,8 +20,8 @@ import com.adaptris.annotation.AdapterComponent;
 import com.adaptris.annotation.ComponentProfile;
 import com.adaptris.annotation.DisplayOrder;
 import com.adaptris.core.AdaptrisMessage;
-import com.adaptris.core.CoreException;
 import com.adaptris.core.ServiceException;
+import com.adaptris.core.util.ExceptionHelper;
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 
 /**
@@ -62,8 +62,8 @@ public class DoWhile extends While {
             this.getCondition().getClass().getSimpleName());
       } while (getCondition().evaluate(msg));
       log.trace("Logical 'DO-WHILE' completed, exiting.");
-    } catch (CoreException e) {
-      throw new ServiceException(e);
+    } catch (Exception e) {
+      throw ExceptionHelper.wrapServiceException(e);
     }
   }
 }
