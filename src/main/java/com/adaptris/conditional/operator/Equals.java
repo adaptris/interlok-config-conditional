@@ -29,16 +29,21 @@ import com.thoughtworks.xstream.annotations.XStreamAlias;
  * This {@link Operator} simply tests two values for equality.
  * </p>
  * <p>
- * The first value used in the equality test is the {@link Condition} that this {@link Operator} is configured for; which could be the message payload or a metadata item for example. <br/>
+ * The first value used in the equality test is the {@link Condition} that this {@link Operator} is
+ * configured for; which could be the message payload or a metadata item for example. <br/>
  * The second value is the static value configured for this operator.
  * </p>
  * <p>
  * The static value can be a literal value; "myValue" or can be metadata resolved for example; <br/>
+ * 
  * <pre>
  *  <value>%message{myKey}</value>
  * </pre>
+ * 
  * The above will test the metadata value identified by the metadata key "myKey".
  * </p>
+ * 
+ * @config equals
  * @author amcgrath
  *
  */

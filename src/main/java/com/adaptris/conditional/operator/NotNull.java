@@ -28,8 +28,11 @@ import com.thoughtworks.xstream.annotations.XStreamAlias;
  * This {@link Operator} simply tests a single value is not null.
  * </p>
  * <p>
- * The value used in the not-null test is the {@link Condition} that this {@link Operator} is configured for; which could be the message payload or a metadata item for example. <br/>
+ * The value used in the not-null test is the {@link Condition} that this {@link Operator} is
+ * configured for; which could be the message payload or a metadata item for example. <br/>
  * </p>
+ * 
+ * @config not-null
  * @author amcgrath
  *
  */
