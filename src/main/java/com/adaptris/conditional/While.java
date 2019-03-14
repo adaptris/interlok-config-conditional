@@ -18,8 +18,9 @@ package com.adaptris.conditional;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
-
+import org.apache.commons.lang3.BooleanUtils;
 import com.adaptris.annotation.AdapterComponent;
+import com.adaptris.annotation.AutoPopulated;
 import com.adaptris.annotation.ComponentProfile;
 import com.adaptris.annotation.DisplayOrder;
 import com.adaptris.annotation.InputFieldDefault;
@@ -28,29 +29,45 @@ import com.adaptris.core.CoreException;
 import com.adaptris.core.Service;
 import com.adaptris.core.ServiceException;
 import com.adaptris.core.ServiceImp;
+import com.adaptris.core.util.Args;
+import com.adaptris.core.util.ExceptionHelper;
+import com.adaptris.core.util.LifecycleHelper;
+import com.adaptris.util.NumberUtils;
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 
 /**
  * <p>
- * This {@link Service} allows you to test boolean (true or false) {@link Condition}'s, which if evaluate to "true" will run a configured set of services continuously until the configured conditions do not evaluate to true.
+ * This {@link Service} allows you to test boolean (true or false) {@link Condition}'s, which if
+ * evaluate to "true" will run a configured set of services continuously until the configured
+ * conditions do not evaluate to true.
  * </p>
  * <p>
- * You can also set a value for the maximum amount of times your services will run regardless of whether your conditions continue to evaluate to true. <br/>
+ * You can also set a value for the maximum amount of times your services will run regardless of
+ * whether your conditions continue to evaluate to true. <br/>
+ * 
  * <pre>
  *  <max-loops>5</max-loops>
  * </pre>
- * The default value for the max-loops is 10.  Setting this value to 0, will loop forever until your configured conditions evaluate to false.
+ * 
+ * The default value for the max-loops is 10. Setting this value to 0, will loop forever until your
+ * configured conditions evaluate to false.
  * </p>
  * <p>
- * Typically your {@link Condition} will test for equality, in-line expressions or whether values exist or not.  The values to test will generally come from the payload or message metadata. <br/>
- * Also note that some conditions can be nested, such that you can test that a value is equal to another AND / OR a value is equal/not to another value.
+ * Typically your {@link Condition} will test for equality, in-line expressions or whether values
+ * exist or not. The values to test will generally come from the payload or message metadata. <br/>
+ * Also note that some conditions can be nested, such that you can test that a value is equal to
+ * another AND / OR a value is equal/not to another value.
  * </p>
+ * 
  * @author aaron
+ * @config while
  *
  */
 @XStreamAlias("while")
 @AdapterComponent
-@ComponentProfile(summary = "Runs the configured service/list repeatedly 'WHILE' the configured condition is met.", tag = "service, conditional")
+@ComponentProfile(
+    summary = "Runs the configured service/list repeatedly 'WHILE' the configured condition is met.",
+    tag = "service,conditional,loop")
 @DisplayOrder(order = {"condition,then,maxLoops"})
 public class While extends ServiceImp {
   
@@ -62,6 +79,7 @@ public class While extends ServiceImp {
   
   @NotNull
   @Valid
+  @AutoPopulated
   private ThenService then;
 
   @InputFieldDefault("10")
@@ -69,21 +87,21 @@ public class While extends ServiceImp {
   
   public While() {
     this.setMaxLoops(DEFAULT_MAX_LOOPS);
+    setThen(new ThenService());
   }
   
   @Override
   public void doService(AdaptrisMessage msg) throws ServiceException {
     int loopCount = 0;
     try {
-      log.trace("Running logical test on 'WHILE', with condition class {}", this.getCondition().getClass().getSimpleName());
-      
+      log.trace("Running logical test on 'WHILE', with condition class {}",
+          this.getCondition().getClass().getSimpleName());
       while(this.getCondition().evaluate(msg)) {
         log.trace("Logical 'IF' evaluated to true on WHILE test, running service.");
         getThen().getService().doService(msg);
-        
         loopCount ++;
-        if((this.getMaxLoops() > 0) && (loopCount >= this.getMaxLoops())) {
-          log.debug("Reached maximum loops({}), breaking.", this.getMaxLoops());
+        if (exceedsMax(loopCount)) {
+          log.debug("Reached maximum loops({}), breaking.", maxLoops());
           break;
         }
       }
@@ -97,29 +115,33 @@ public class While extends ServiceImp {
 
   @Override
   public void prepare() throws CoreException {
-    if(this.getCondition() == null)
-      throw new CoreException("No condition has been set for logical 'IF'");
-    this.getThen().prepare();
+    try {
+      Args.notNull(getCondition(), "condition");
+      LifecycleHelper.prepare(getThen());
+      this.getThen().prepare();
+    } catch (Exception e) {
+      throw ExceptionHelper.wrapCoreException(e);
+    }
   }
 
   @Override
   protected void initService() throws CoreException {
-    this.getThen().init();
+    LifecycleHelper.init(getThen());
   }
 
   @Override
   protected void closeService() {
-    this.getThen().close();
+    LifecycleHelper.close(getThen());
   }
   
   @Override
   public void start() throws CoreException {
-    this.getThen().start();
+    LifecycleHelper.start(getThen());
   }
   
   @Override
   public void stop() {
-    this.getThen().stop();
+    LifecycleHelper.stop(getThen());
   }
   
 
@@ -143,7 +165,24 @@ public class While extends ServiceImp {
     return maxLoops;
   }
 
+  /**
+   * Set the maximum number of loops.
+   * <p>
+   * Note that you can set the max-loops to be {@code <0} to get infinite loops; in that situation
+   * if your condition is never met, the service will loop indefinitely.
+   * </p>
+   * 
+   * @param maxLoops the max loops; if not specified 10.
+   */
   public void setMaxLoops(Integer maxLoops) {
     this.maxLoops = maxLoops;
+  }
+
+  protected int maxLoops() {
+    return NumberUtils.toIntDefaultIfNull(getMaxLoops(), DEFAULT_MAX_LOOPS);
+  }
+
+  protected boolean exceedsMax(int loopCount) {
+    return BooleanUtils.and(new boolean[] {maxLoops() > 0, loopCount >= maxLoops()});
   }
 }
