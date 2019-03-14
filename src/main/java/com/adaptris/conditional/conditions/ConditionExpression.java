@@ -19,6 +19,7 @@ package com.adaptris.conditional.conditions;
 import com.adaptris.annotation.AdapterComponent;
 import com.adaptris.annotation.ComponentProfile;
 import com.adaptris.annotation.DisplayOrder;
+import com.adaptris.annotation.InputFieldHint;
 import com.adaptris.conditional.Condition;
 import com.adaptris.core.AdaptrisMessage;
 import com.adaptris.core.CoreException;
@@ -67,6 +68,7 @@ import com.thoughtworks.xstream.annotations.XStreamAlias;
 @DisplayOrder(order = {"algorithm"})
 public class ConditionExpression extends ConditionImpl {
   
+  @InputFieldHint(expression = true)
   private String algorithm;
 
   public ConditionExpression() {
