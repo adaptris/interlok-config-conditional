@@ -18,7 +18,6 @@ package com.adaptris.conditional.conditions;
 
 import org.apache.commons.lang3.StringUtils;
 import org.hibernate.validator.constraints.NotBlank;
-
 import com.adaptris.annotation.AdapterComponent;
 import com.adaptris.annotation.AffectsMetadata;
 import com.adaptris.annotation.ComponentProfile;
@@ -31,8 +30,11 @@ import com.thoughtworks.xstream.annotations.XStreamAlias;
 
 /**
  * <p>
- * This {@link Condition} targets message metadata.  All you need do is choose an {@link Operator} to apply the conditional test.
+ * This {@link Condition} targets message metadata. All you need do is choose an {@link Operator} to
+ * apply the conditional test.
  * </p>
+ * 
+ * @config metadata
  * @author amcgrath
  *
  */

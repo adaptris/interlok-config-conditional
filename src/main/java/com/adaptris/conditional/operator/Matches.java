@@ -26,7 +26,7 @@ import com.thoughtworks.xstream.annotations.XStreamAlias;
 
 /**
  * <p>
- * This {@link Operator} simply tests two values for equality.
+ * This {@link Operator} simply tests two values for using {@link String#matches(String)}.
  * </p>
  * <p>
  * The first value used in the equality test is the {@link Condition} that this {@link Operator} is
@@ -43,27 +43,32 @@ import com.thoughtworks.xstream.annotations.XStreamAlias;
  * The above will test the metadata value identified by the metadata key "myKey".
  * </p>
  * 
- * @config equals
- * @author amcgrath
+ * @config matches
  *
  */
-@XStreamAlias("equals")
+@XStreamAlias("matches")
 @AdapterComponent
-@ComponentProfile(summary = "Tests that a configured value equals the supplied value.", tag = "operator")
-public class Equals implements Operator {
+@ComponentProfile(summary = "Tests that a configured value matches the supplied value.",
+    tag = "operator")
+public class Matches implements Operator {
 
   @InputFieldHint(expression = true)
   private String value;
   
   @Override
-  public boolean apply(AdaptrisMessage message, String object) {
-    return message.resolve(this.getValue()).equals(message.resolve(object));
+  public boolean apply(AdaptrisMessage msg, String obj) {
+    return msg.resolve(obj).matches(msg.resolve(getValue()));
   }
 
   public String getValue() {
     return value;
   }
 
+  /**
+   * Set the value to match against.
+   * 
+   * @param value the value which conforms to a {@link java.util.Pattern}.
+   */
   public void setValue(String value) {
     this.value = value;
   }
