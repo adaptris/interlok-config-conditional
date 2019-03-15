@@ -117,7 +117,6 @@ public class While extends ServiceImp {
     try {
       Args.notNull(getCondition(), "condition");
       LifecycleHelper.prepare(getThen());
-      this.getThen().prepare();
     } catch (Exception e) {
       throw ExceptionHelper.wrapCoreException(e);
     }
