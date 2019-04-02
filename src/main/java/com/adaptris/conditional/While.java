@@ -18,7 +18,9 @@ package com.adaptris.conditional;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
+
 import org.apache.commons.lang3.BooleanUtils;
+
 import com.adaptris.annotation.AdapterComponent;
 import com.adaptris.annotation.AutoPopulated;
 import com.adaptris.annotation.ComponentProfile;
@@ -68,7 +70,7 @@ import com.thoughtworks.xstream.annotations.XStreamAlias;
 @ComponentProfile(
     summary = "Runs the configured service/list repeatedly 'WHILE' the configured condition is met.",
     tag = "service,conditional,loop")
-@DisplayOrder(order = {"condition,then,maxLoops"})
+@DisplayOrder(order = {"condition", "then", "maxLoops"})
 public class While extends ServiceImp {
   
   private static final int DEFAULT_MAX_LOOPS = 10;

@@ -40,7 +40,7 @@ import com.thoughtworks.xstream.annotations.XStreamAlias;
 @ComponentProfile(
     summary = "Runs the configured service/list repeatedly 'WHILE' the configured condition is met.",
     tag = "service,conditional,loop", since = "3.8.4")
-@DisplayOrder(order = {"condition,then,maxLoops"})
+@DisplayOrder(order = {"condition", "then", "maxLoops"})
 public class DoWhile extends While {
   
   public DoWhile() {
