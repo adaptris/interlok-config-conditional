@@ -20,12 +20,14 @@ import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 
 import com.adaptris.annotation.AdapterComponent;
+import com.adaptris.annotation.AutoPopulated;
 import com.adaptris.annotation.ComponentProfile;
 import com.adaptris.core.ComponentLifecycle;
 import com.adaptris.core.ComponentLifecycleExtension;
 import com.adaptris.core.CoreException;
-import com.adaptris.core.NullService;
 import com.adaptris.core.Service;
+import com.adaptris.core.ServiceList;
+import com.adaptris.core.util.Args;
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 
 /**
@@ -42,12 +44,13 @@ public class ElseService implements ComponentLifecycle, ComponentLifecycleExtens
 
   @NotNull
   @Valid
+  @AutoPopulated
   private Service service;
-  
+
   public ElseService() {
-    this.setService(new NullService());
+    this.setService(new ServiceList());
   }
-  
+
   @Override
   public void prepare() throws CoreException {
       service.prepare();
@@ -78,7 +81,7 @@ public class ElseService implements ComponentLifecycle, ComponentLifecycleExtens
   }
 
   public void setService(Service elseService) {
-    this.service = elseService;
+    this.service = Args.notNull(elseService, "service");
   }
 
 }

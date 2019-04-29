@@ -27,8 +27,11 @@ import com.thoughtworks.xstream.annotations.XStreamAlias;
 
 /**
  * <p>
- * This {@link Condition} targets the message payload.  All you need do is choose an {@link Operator} to apply the conditional test.
+ * This {@link Condition} targets the message payload. All you need do is choose an {@link Operator}
+ * to apply the conditional test.
  * </p>
+ * 
+ * @config payload
  * @author amcgrath
  *
  */

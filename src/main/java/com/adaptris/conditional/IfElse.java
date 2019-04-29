@@ -19,9 +19,6 @@ package com.adaptris.conditional;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.adaptris.annotation.AdapterComponent;
 import com.adaptris.annotation.ComponentProfile;
 import com.adaptris.annotation.DisplayOrder;
@@ -54,8 +51,6 @@ import com.thoughtworks.xstream.annotations.XStreamAlias;
 @ComponentProfile(summary = "Runs the configured service/list 'IF' the configured condition is met, otherwise will run the 'else' service/list.", tag = "service, conditional", since="3.7.3")
 @DisplayOrder(order = {"condition", "then","otherwise"})
 public class IfElse extends ServiceImp {
-
-  protected transient Logger log = LoggerFactory.getLogger(this.getClass().getName());
 
   @NotNull
   @Valid

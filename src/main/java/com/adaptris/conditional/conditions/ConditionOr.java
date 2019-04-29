@@ -17,7 +17,6 @@
 package com.adaptris.conditional.conditions;
 
 import java.util.ArrayList;
-
 import com.adaptris.annotation.AdapterComponent;
 import com.adaptris.annotation.ComponentProfile;
 import com.adaptris.conditional.Condition;
@@ -27,8 +26,11 @@ import com.thoughtworks.xstream.annotations.XStreamAlias;
 
 /**
  * <p>
- * This {@link Condition} allows you to configure a list of child {@link Condition}'s where only one has to evaluate to "true".
+ * This {@link Condition} allows you to configure a list of child {@link Condition}'s where only one
+ * has to evaluate to "true".
  * </p>
+ * 
+ * @config or
  * @author amcgrath
  *
  */
