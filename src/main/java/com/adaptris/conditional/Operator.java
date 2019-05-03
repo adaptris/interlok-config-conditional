@@ -37,6 +37,5 @@ import com.adaptris.conditional.conditions.ConditionPayload;
 @Deprecated
 @Removal(version = "3.11.0", message = "config-conditional was promoted into interlok-core")
 public interface Operator extends com.adaptris.core.services.conditional.Operator {
-  
 
 }

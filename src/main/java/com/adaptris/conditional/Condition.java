@@ -17,8 +17,6 @@
 package com.adaptris.conditional;
 
 import com.adaptris.annotation.Removal;
-import com.adaptris.core.AdaptrisMessage;
-import com.adaptris.core.CoreException;
 
 /**
  * <p>
@@ -39,8 +37,5 @@ import com.adaptris.core.CoreException;
 @Deprecated
 @Removal(version = "3.11.0", message = "config-conditional was promoted into interlok-core")
 public interface Condition extends com.adaptris.core.services.conditional.Condition {
-  
-  @Override
-  public boolean evaluate(AdaptrisMessage message) throws CoreException;
 
 }
