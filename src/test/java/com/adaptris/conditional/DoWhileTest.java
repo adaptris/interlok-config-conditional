@@ -38,6 +38,7 @@ import com.adaptris.core.ServiceException;
 import com.adaptris.core.services.LogMessageService;
 import com.adaptris.core.util.LifecycleHelper;
 
+@SuppressWarnings("deprecation")
 public class DoWhileTest extends ServiceCase {
 
   private DoWhile doWhile;
@@ -48,8 +49,10 @@ public class DoWhileTest extends ServiceCase {
   
   @Mock private Service mockService;
   
-  @Mock private Condition mockCondition;
+  @Mock
+  private Condition mockCondition;
   
+  @Override
   @Before
   public void setUp() throws Exception {
     MockitoAnnotations.initMocks(this);
@@ -67,6 +70,7 @@ public class DoWhileTest extends ServiceCase {
 
   }
   
+  @Override
   @After
   public void tearDown() throws Exception {
     LifecycleHelper.stopAndClose(doWhile);

@@ -16,12 +16,13 @@
 
 package com.adaptris.conditional.operator;
 
-import org.apache.commons.lang3.StringUtils;
 import com.adaptris.annotation.AdapterComponent;
 import com.adaptris.annotation.ComponentProfile;
+import com.adaptris.annotation.GenerateBeanInfo;
+import com.adaptris.annotation.Removal;
 import com.adaptris.conditional.Condition;
 import com.adaptris.conditional.Operator;
-import com.adaptris.core.AdaptrisMessage;
+import com.adaptris.core.util.LoggingHelper;
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 
 /**
@@ -30,21 +31,37 @@ import com.thoughtworks.xstream.annotations.XStreamAlias;
  * </p>
  * <p>
  * The value used in the not-null test is the {@link Condition} that this {@link Operator} is
- * configured for; which could be the message payload or a metadata item for example. <br/>
+ * configured for; which could be the message payload or a metadata item for example.
+ * </p>
+ * <p>
+ * <strong> this class is likely to cause you problems since the alias name is poor; and interferes
+ * if you have any classes that have the {@link GenerateBeanInfo} annotation.</strong>. Switch to
+ * using {@link IsNull} as soon as practical.
  * </p>
  * 
- * @config null
+ * @deprecated config-conditional was promoted into interlok-core; this class will be removed w/o
+ *             warning.
  * @author amcgrath
  *
  */
+@Deprecated
+@Removal(version = "3.11.0",
+    message = "config-conditional was promoted into interlok-core; this class will be removed w/o warning as it interfers with marshalling behaviour.")
 @XStreamAlias("null")
 @AdapterComponent
 @ComponentProfile(summary = "Tests that a value does not exists (is null).", tag = "operator")
-public class Null implements Operator {
+public class Null extends com.adaptris.core.services.conditional.operator.IsNull {
 
-  @Override
-  public boolean apply(AdaptrisMessage message, String object) {
-    return StringUtils.isEmpty(object);
+  private transient boolean warningLogged = false;
+
+  public Null() {
+    LoggingHelper.logDeprecation(warningLogged, () -> {
+      warningLogged = true;
+    }, this.getClass().getCanonicalName(),
+        com.adaptris.core.services.conditional.operator.IsNull.class
+            .getCanonicalName());
+
   }
+
 
 }

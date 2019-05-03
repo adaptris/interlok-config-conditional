@@ -16,17 +16,12 @@
 
 package com.adaptris.conditional.conditions;
 
-import org.apache.commons.lang3.StringUtils;
-import org.hibernate.validator.constraints.NotBlank;
-import com.adaptris.annotation.AdapterComponent;
-import com.adaptris.annotation.AffectsMetadata;
 import com.adaptris.annotation.ComponentProfile;
 import com.adaptris.annotation.DisplayOrder;
+import com.adaptris.annotation.Removal;
 import com.adaptris.conditional.Condition;
 import com.adaptris.conditional.Operator;
-import com.adaptris.core.AdaptrisMessage;
-import com.adaptris.core.CoreException;
-import com.thoughtworks.xstream.annotations.XStreamAlias;
+import com.adaptris.core.util.LoggingHelper;
 
 /**
  * <p>
@@ -34,37 +29,26 @@ import com.thoughtworks.xstream.annotations.XStreamAlias;
  * apply the conditional test.
  * </p>
  * 
- * @config metadata
+ * @deprecated since 3.9.0; config-conditional was promoted into interlok-core
  * @author amcgrath
  *
  */
-@XStreamAlias("metadata")
-@AdapterComponent
+@Deprecated
+@Removal(version = "3.11.0", message = "config-conditional was promoted into interlok-core")
 @ComponentProfile(summary = "Tests a metadata key against a configured operator.", tag = "condition,metadata")
 @DisplayOrder(order = {"metadataKey", "operator"})
-public class ConditionMetadata extends ConditionWithOperator {
+public class ConditionMetadata
+    extends com.adaptris.core.services.conditional.conditions.ConditionMetadata {
   
-  @NotBlank
-  @AffectsMetadata
-  private String metadataKey;
-  
-  @Override
-  public boolean evaluate(AdaptrisMessage message) throws CoreException {
-    if(!StringUtils.isEmpty(this.getMetadataKey())) {
-      log.trace("Testing metadata condition with key: {}", this.getMetadataKey());
-      return operator().apply(message, message.getMetadataValue(this.getMetadataKey()));
-    } else {
-      log.warn("No metadata key supplied, returning false.");
-      return false;
-    }
-  }
+  private transient boolean warningLogged = false;
 
-  public String getMetadataKey() {
-    return metadataKey;
-  }
+  public ConditionMetadata() {
+    LoggingHelper.logDeprecation(warningLogged, () -> {
+      warningLogged = true;
+    }, this.getClass().getCanonicalName(),
+        com.adaptris.core.services.conditional.conditions.ConditionMetadata.class
+            .getCanonicalName());
 
-  public void setMetadataKey(String metadataKey) {
-    this.metadataKey = metadataKey;
   }
 
 }

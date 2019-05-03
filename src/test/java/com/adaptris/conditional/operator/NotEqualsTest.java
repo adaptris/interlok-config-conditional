@@ -18,13 +18,12 @@ package com.adaptris.conditional.operator;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
-
 import org.junit.Before;
 import org.junit.Test;
-
 import com.adaptris.core.AdaptrisMessage;
 import com.adaptris.core.DefaultMessageFactory;
 
+@SuppressWarnings("deprecation")
 public class NotEqualsTest {
 
   private NotEquals operator;

@@ -21,6 +21,7 @@ import static org.junit.Assert.assertTrue;
 import org.junit.Test;
 import com.adaptris.core.AdaptrisMessageFactory;
 
+@SuppressWarnings("deprecation")
 public class MatchesTest {
 
   @Test

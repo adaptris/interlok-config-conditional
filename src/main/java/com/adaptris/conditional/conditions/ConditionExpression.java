@@ -19,16 +19,9 @@ package com.adaptris.conditional.conditions;
 import com.adaptris.annotation.AdapterComponent;
 import com.adaptris.annotation.ComponentProfile;
 import com.adaptris.annotation.DisplayOrder;
-import com.adaptris.annotation.InputFieldHint;
-import com.adaptris.conditional.Condition;
-import com.adaptris.core.AdaptrisMessage;
-import com.adaptris.core.CoreException;
-import com.adaptris.core.util.LifecycleHelper;
-import com.adaptris.expressions.FreeFormExpressionService;
-import com.adaptris.interlok.InterlokException;
-import com.adaptris.interlok.config.DataOutputParameter;
-import com.adaptris.interlok.types.InterlokMessage;
-import com.thoughtworks.xstream.annotations.XStreamAlias;
+import com.adaptris.annotation.Removal;
+import com.adaptris.core.services.conditional.Condition;
+import com.adaptris.core.util.LoggingHelper;
 
 /**
  * <p>
@@ -61,53 +54,27 @@ import com.thoughtworks.xstream.annotations.XStreamAlias;
  * 
  * </p>
  * 
- * @config expression
+ * @deprecated since 3.9.0; config-conditional was promoted into interlok-core
  * @author amcgrath
  *
  */
-@XStreamAlias("expression")
+@Deprecated
+@Removal(version = "3.11.0", message = "config-conditional was promoted into interlok-core")
 @AdapterComponent
 @ComponentProfile(summary = "Tests a static algorithm for a boolean result.", tag = "condition")
 @DisplayOrder(order = {"algorithm"})
-public class ConditionExpression extends ConditionImpl {
+public class ConditionExpression
+    extends com.adaptris.core.services.conditional.conditions.ConditionExpression {
   
-  @InputFieldHint(expression = true)
-  private String algorithm;
+
+  private transient boolean warningLogged = false;
 
   public ConditionExpression() {
-  }
+    LoggingHelper.logDeprecation(warningLogged, () -> {
+      warningLogged = true;
+    }, this.getClass().getCanonicalName(),
+        com.adaptris.core.services.conditional.conditions.ConditionExpression.class.getCanonicalName());
 
-  @Override
-  public boolean evaluate(AdaptrisMessage message) throws CoreException {
-    final ReturnedExpressionValue expressionResult = new ReturnedExpressionValue();
-    FreeFormExpressionService expressionService = new FreeFormExpressionService();
-    try {
-      expressionService.setAlgorithm(getAlgorithm());
-      expressionService.setResult(new DataOutputParameter<String>() {
-        @Override
-        public void insert(String data, InterlokMessage msg) throws InterlokException {
-          expressionResult.value = data;
-        }
-      });
-      LifecycleHelper.initAndStart(expressionService, false);
-      expressionService.doService(message);
-    } finally {
-      LifecycleHelper.stopAndClose(expressionService, false);
-    }
-    return expressionResult.value.equalsIgnoreCase("true");
   }
-
-  public String getAlgorithm() {
-    return algorithm;
-  }
-
-  public void setAlgorithm(String algorithm) {
-    this.algorithm = algorithm;
-  }
-
-  class ReturnedExpressionValue {
-    String value = "";
-  }
-
 
 }

@@ -16,72 +16,35 @@
 
 package com.adaptris.conditional;
 
-import javax.validation.Valid;
-import javax.validation.constraints.NotNull;
-
 import com.adaptris.annotation.AdapterComponent;
-import com.adaptris.annotation.AutoPopulated;
 import com.adaptris.annotation.ComponentProfile;
-import com.adaptris.core.ComponentLifecycle;
-import com.adaptris.core.ComponentLifecycleExtension;
-import com.adaptris.core.CoreException;
-import com.adaptris.core.Service;
-import com.adaptris.core.ServiceList;
-import com.adaptris.core.util.Args;
-import com.thoughtworks.xstream.annotations.XStreamAlias;
+import com.adaptris.annotation.Removal;
+import com.adaptris.core.util.LoggingHelper;
 
 /**
  * <p>
- * This service holder is used to hold the service or list of services that will be executed by logical expressions, such as {@link IfElse} and {@link While}, should configured {@link Condition}'s pass.
- * </p>>
+ * This service holder is used to hold the service or list of services that will be executed by
+ * logical expressions, such as {@link IfElse} and {@link While}, should configured
+ * {@link Condition}'s pass.
+ * </p>
+ * >
+ * 
  * @author amcgrath
- *
+ * @deprecated since 3.9.0; config-conditional was promoted into interlok-core
+ * 
  */
-@XStreamAlias("then")
 @AdapterComponent
 @ComponentProfile(summary = "A service/list that should be executed after conditions have been met. ", tag = "service, conditional")
-public class ThenService implements ComponentLifecycle, ComponentLifecycleExtension {
-
-  @NotNull
-  @Valid
-  @AutoPopulated
-  private Service service;
+@Deprecated
+@Removal(version = "3.11.0", message = "config-conditional was promoted into interlok-core")
+public class ThenService extends com.adaptris.core.services.conditional.ThenService {
+  private transient boolean warningLogged = false;
 
   public ThenService() {
-    this.setService(new ServiceList());
-  }
+    LoggingHelper.logDeprecation(warningLogged, () -> {
+      warningLogged = true;
+    }, this.getClass().getCanonicalName(),
+        com.adaptris.core.services.conditional.ThenService.class.getCanonicalName());
 
-  @Override
-  public void prepare() throws CoreException {
-      service.prepare();
   }
-
-  @Override
-  public void init() throws CoreException {
-      service.init();
-  }
-
-  @Override
-  public void start() throws CoreException {
-      service.start();
-  }
-
-  @Override
-  public void stop() {
-      service.stop();
-  }
-
-  @Override
-  public void close() {
-      service.close();
-  }
-
-  public Service getService() {
-    return service;
-  }
-
-  public void setService(Service thenService) {
-    this.service = Args.notNull(thenService, "service");
-  }
-
 }

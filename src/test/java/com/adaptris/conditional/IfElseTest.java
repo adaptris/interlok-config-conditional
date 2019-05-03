@@ -20,10 +20,8 @@ import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
-
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-
 import com.adaptris.conditional.conditions.ConditionAnd;
 import com.adaptris.conditional.conditions.ConditionExpression;
 import com.adaptris.conditional.conditions.ConditionFunction;
@@ -41,6 +39,7 @@ import com.adaptris.core.ServiceException;
 import com.adaptris.core.services.LogMessageService;
 import com.adaptris.core.util.LifecycleHelper;
 
+@SuppressWarnings("deprecation")
 public class IfElseTest  extends ServiceCase {
 
   private IfElse logicalExpression;
@@ -57,6 +56,7 @@ public class IfElseTest  extends ServiceCase {
   
   @Mock private Condition mockCondition;
   
+  @Override
   public void setUp() throws Exception {
     MockitoAnnotations.initMocks(this);
     
@@ -76,6 +76,7 @@ public class IfElseTest  extends ServiceCase {
     LifecycleHelper.initAndStart(logicalExpression);
   }
   
+  @Override
   public void tearDown() throws Exception {
     LifecycleHelper.stopAndClose(logicalExpression);
   }

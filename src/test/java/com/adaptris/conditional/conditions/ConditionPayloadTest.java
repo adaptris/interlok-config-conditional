@@ -17,17 +17,16 @@
 package com.adaptris.conditional.conditions;
 
 import static org.junit.Assert.assertTrue;
-
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-
 import com.adaptris.conditional.operator.NotNull;
 import com.adaptris.conditional.operator.Null;
 import com.adaptris.core.AdaptrisMessage;
 import com.adaptris.core.DefaultMessageFactory;
 import com.adaptris.core.util.LifecycleHelper;
 
+@SuppressWarnings("deprecation")
 public class ConditionPayloadTest {
   
   private ConditionPayload condition;
@@ -45,10 +44,6 @@ public class ConditionPayloadTest {
     LifecycleHelper.stopAndClose(condition);
   }
 
-  @Test(expected = IllegalArgumentException.class)
-  public void testNoOperator() throws Exception {
-    condition.operator();
-  }
 
   @Test
   public void testPayloadExists() throws Exception {
