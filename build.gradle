@@ -195,6 +195,7 @@ publishing {
         properties.appendNode("target", "3.7.3+")
         properties.appendNode("license", "false")
         properties.appendNode("tags", "if,conditional")
+        properties.appendNode("deprecated", "Since 3.9.0; this was merged into interlok-core")
       }
     }
   }
