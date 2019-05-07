@@ -20,10 +20,8 @@ import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
-
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-
 import com.adaptris.conditional.conditions.ConditionMetadata;
 import com.adaptris.conditional.conditions.ConditionOr;
 import com.adaptris.conditional.operator.NotNull;
@@ -37,6 +35,7 @@ import com.adaptris.core.ServiceException;
 import com.adaptris.core.services.LogMessageService;
 import com.adaptris.core.util.LifecycleHelper;
 
+@SuppressWarnings("deprecation")
 public class WhileTest extends ServiceCase {
 
   private While logicalExpression;
@@ -47,8 +46,10 @@ public class WhileTest extends ServiceCase {
   
   @Mock private Service mockService;
   
-  @Mock private Condition mockCondition;
+  @Mock
+  private Condition mockCondition;
   
+  @Override
   public void setUp() throws Exception {
     MockitoAnnotations.initMocks(this);
     
@@ -65,6 +66,7 @@ public class WhileTest extends ServiceCase {
 
   }
   
+  @Override
   public void tearDown() throws Exception {
     this.StopMe(logicalExpression);
   }

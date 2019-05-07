@@ -16,22 +16,26 @@
 
 package com.adaptris.conditional;
 
-import com.adaptris.core.AdaptrisMessage;
-import com.adaptris.core.ComponentLifecycle;
-import com.adaptris.core.CoreException;
+import com.adaptris.annotation.Removal;
 
 /**
  * <p>
- * Conditions are used with logical expressions in configuration such as {@link IfElse} and {@link While}.
+ * Conditions are used with logical expressions in configuration such as {@link IfElse} and
+ * {@link While}.
  * </p>
  * <p>
- * Logical expressions allow us to branch through services based on the results of Conditions.  Conditions generally test for equality, nulls and not-nulls against a message payload or metadata item.
+ * Logical expressions allow us to branch through services based on the results of Conditions.
+ * Conditions generally test for equality, nulls and not-nulls against a message payload or metadata
+ * item.
  * </p>
+ * 
  * @author amcgrath
+ * @deprecated since 3.9.0; config-conditional was promoted into interlok-core
  *
+ * 
  */
-public interface Condition extends ComponentLifecycle {
-  
-  public boolean evaluate(AdaptrisMessage message) throws CoreException;
+@Deprecated
+@Removal(version = "3.11.0", message = "config-conditional was promoted into interlok-core")
+public interface Condition extends com.adaptris.core.services.conditional.Condition {
 
 }

@@ -19,10 +19,8 @@ package com.adaptris.conditional;
 import com.adaptris.annotation.AdapterComponent;
 import com.adaptris.annotation.ComponentProfile;
 import com.adaptris.annotation.DisplayOrder;
-import com.adaptris.core.AdaptrisMessage;
-import com.adaptris.core.ServiceException;
-import com.adaptris.core.util.ExceptionHelper;
-import com.thoughtworks.xstream.annotations.XStreamAlias;
+import com.adaptris.annotation.Removal;
+import com.adaptris.core.util.LoggingHelper;
 
 /**
  * Simulate a do-while loop.
@@ -32,38 +30,25 @@ import com.thoughtworks.xstream.annotations.XStreamAlias;
  * {@code while(condition) { }}.
  * </p>
  * 
- * @see While
- * @config do-while
+ * @deprecated since 3.9.0; config-conditional was promoted into interlok-core
  */
-@XStreamAlias("do-while")
 @AdapterComponent
 @ComponentProfile(
     summary = "Runs the configured service/list repeatedly 'WHILE' the configured condition is met.",
     tag = "service,conditional,loop", since = "3.8.4")
 @DisplayOrder(order = {"condition", "then", "maxLoops"})
-public class DoWhile extends While {
+@Deprecated
+@Removal(version = "3.11.0", message = "config-conditional was promoted into interlok-core")
+public class DoWhile extends com.adaptris.core.services.conditional.DoWhile {
   
+  private transient boolean warningLogged = false;
+
   public DoWhile() {
-    super();
+    LoggingHelper.logDeprecation(warningLogged, () -> {
+      warningLogged = true;
+    }, this.getClass().getCanonicalName(),
+        com.adaptris.core.services.conditional.DoWhile.class.getCanonicalName());
+
   }
   
-  @Override
-  public void doService(AdaptrisMessage msg) throws ServiceException {
-    int loopCount = 0;
-    try {
-      do {
-        getThen().getService().doService(msg);
-        loopCount++;
-        if (exceedsMax(loopCount)) {
-          log.debug("Reached maximum loops({}), breaking.", maxLoops());
-          break;
-        }
-        log.trace("Testing condition for 'DO-WHILE', with condition class {}",
-            this.getCondition().getClass().getSimpleName());
-      } while (getCondition().evaluate(msg));
-      log.trace("Logical 'DO-WHILE' completed, exiting.");
-    } catch (Exception e) {
-      throw ExceptionHelper.wrapServiceException(e);
-    }
-  }
 }

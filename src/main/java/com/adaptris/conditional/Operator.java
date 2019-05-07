@@ -16,22 +16,26 @@
 
 package com.adaptris.conditional;
 
+import com.adaptris.annotation.Removal;
 import com.adaptris.conditional.conditions.ConditionMetadata;
 import com.adaptris.conditional.conditions.ConditionPayload;
-import com.adaptris.core.AdaptrisMessage;
 
 /**
  * <p>
- * Operators are used with {@link Condition}'s in configuration such as {@link ConditionMetadata} and {@link ConditionPayload}.
+ * Operators are used with {@link Condition}'s in configuration such as {@link ConditionMetadata}
+ * and {@link ConditionPayload}.
  * </p>
  * <p>
- * While the {@link Condition} is the target for any test, such as metadata or payload, the Operator is the actual test; "equals", "null" etc.
+ * While the {@link Condition} is the target for any test, such as metadata or payload, the Operator
+ * is the actual test; "equals", "null" etc.
  * </p>
+ * 
  * @author amcgrath
- *
+ * @deprecated since 3.9.0; config-conditional was promoted into interlok-core
+ * 
  */
-public interface Operator {
-  
-  public boolean apply(AdaptrisMessage message, String object);
+@Deprecated
+@Removal(version = "3.11.0", message = "config-conditional was promoted into interlok-core")
+public interface Operator extends com.adaptris.core.services.conditional.Operator {
 
 }

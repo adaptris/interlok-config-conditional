@@ -195,6 +195,7 @@ publishing {
         properties.appendNode("target", "3.7.3+")
         properties.appendNode("license", "false")
         properties.appendNode("tags", "if,conditional")
+        properties.appendNode("deprecated", "Since 3.9.0; this was merged into interlok-core")
       }
     }
   }
@@ -228,6 +229,8 @@ tasks.withType(com.github.spotbugs.SpotBugsTask) {
     xml.enabled = false
     html.enabled = true
   }
+  includeFilter = new File("$rootDir/gradle/spotbugs-filter.xml")
+  excludeFilter = new File("$rootDir/gradle/spotbugs-exclude.xml")
 }
 
 check.dependsOn jacocoTestReport

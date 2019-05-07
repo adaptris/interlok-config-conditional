@@ -18,11 +18,10 @@ package com.adaptris.conditional.operator;
 
 import com.adaptris.annotation.AdapterComponent;
 import com.adaptris.annotation.ComponentProfile;
-import com.adaptris.annotation.InputFieldHint;
+import com.adaptris.annotation.Removal;
 import com.adaptris.conditional.Condition;
 import com.adaptris.conditional.Operator;
-import com.adaptris.core.AdaptrisMessage;
-import com.thoughtworks.xstream.annotations.XStreamAlias;
+import com.adaptris.core.util.LoggingHelper;
 
 /**
  * <p>
@@ -43,29 +42,25 @@ import com.thoughtworks.xstream.annotations.XStreamAlias;
  * The above will test the metadata value identified by the metadata key "myKey".
  * </p>
  * 
- * @config not-equals
+ * @deprecated since 3.9.0; config-conditional was promoted into interlok-core
  * @author amcgrath
  *
  */
-@XStreamAlias("not-equals")
+@Deprecated
+@Removal(version = "3.11.0", message = "config-conditional was promoted into interlok-core")
 @AdapterComponent
 @ComponentProfile(summary = "Tests that a configured value does not equal the supplied value.", tag = "operator")
-public class NotEquals implements Operator {
+public class NotEquals extends com.adaptris.core.services.conditional.operator.NotEquals {
 
-  @InputFieldHint(expression = true)
-  private String value;
-  
-  @Override
-  public boolean apply(AdaptrisMessage message, String object) {
-    return !message.resolve(this.getValue()).equals(message.resolve(object));
-  }
+  private transient boolean warningLogged = false;
 
-  public String getValue() {
-    return value;
-  }
+  public NotEquals() {
+    LoggingHelper.logDeprecation(warningLogged, () -> {
+      warningLogged = true;
+    }, this.getClass().getCanonicalName(),
+        com.adaptris.core.services.conditional.operator.NotEquals.class
+            .getCanonicalName());
 
-  public void setValue(String value) {
-    this.value = value;
   }
 
 }
