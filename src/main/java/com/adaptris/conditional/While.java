@@ -16,26 +16,12 @@
 
 package com.adaptris.conditional;
 
-import javax.validation.Valid;
-import javax.validation.constraints.NotNull;
-
-import org.apache.commons.lang3.BooleanUtils;
-
 import com.adaptris.annotation.AdapterComponent;
-import com.adaptris.annotation.AutoPopulated;
 import com.adaptris.annotation.ComponentProfile;
 import com.adaptris.annotation.DisplayOrder;
-import com.adaptris.annotation.InputFieldDefault;
-import com.adaptris.core.AdaptrisMessage;
-import com.adaptris.core.CoreException;
+import com.adaptris.annotation.Removal;
 import com.adaptris.core.Service;
-import com.adaptris.core.ServiceException;
-import com.adaptris.core.ServiceImp;
-import com.adaptris.core.util.Args;
-import com.adaptris.core.util.ExceptionHelper;
-import com.adaptris.core.util.LifecycleHelper;
-import com.adaptris.util.NumberUtils;
-import com.thoughtworks.xstream.annotations.XStreamAlias;
+import com.adaptris.core.util.LoggingHelper;
 
 /**
  * <p>
@@ -62,127 +48,24 @@ import com.thoughtworks.xstream.annotations.XStreamAlias;
  * </p>
  * 
  * @author aaron
- * @config while
+ * @deprecated since 3.9.0; config-conditional was promoted into interlok-core
  *
  */
-@XStreamAlias("while")
+@Deprecated
+@Removal(version = "3.11.0", message = "config-conditional was promoted into interlok-core")
 @AdapterComponent
 @ComponentProfile(
     summary = "Runs the configured service/list repeatedly 'WHILE' the configured condition is met.",
     tag = "service,conditional,loop")
 @DisplayOrder(order = {"condition", "then", "maxLoops"})
-public class While extends ServiceImp {
-  
-  private static final int DEFAULT_MAX_LOOPS = 10;
-  
-  @NotNull
-  @Valid
-  private Condition condition;
-  
-  @NotNull
-  @Valid
-  @AutoPopulated
-  private ThenService then;
+public class While extends com.adaptris.core.services.conditional.While {
+  private transient boolean warningLogged = false;
 
-  @InputFieldDefault("10")
-  private Integer maxLoops;
-  
   public While() {
-    this.setMaxLoops(DEFAULT_MAX_LOOPS);
-    setThen(new ThenService());
-  }
-  
-  @Override
-  public void doService(AdaptrisMessage msg) throws ServiceException {
-    int loopCount = 0;
-    try {
-      log.trace("Running logical test on 'WHILE', with condition class {}",
-          this.getCondition().getClass().getSimpleName());
-      while(this.getCondition().evaluate(msg)) {
-        log.trace("Logical 'IF' evaluated to true on WHILE test, running service.");
-        getThen().getService().doService(msg);
-        loopCount ++;
-        if (exceedsMax(loopCount)) {
-          log.debug("Reached maximum loops({}), breaking.", maxLoops());
-          break;
-        }
-      }
-      log.trace("Logical 'WHILE' completed, exiting.");
-    } catch (Exception e) {
-      throw ExceptionHelper.wrapServiceException(e);
-    }
-    
-  }
+    LoggingHelper.logDeprecation(warningLogged, () -> {
+      warningLogged = true;
+    }, this.getClass().getCanonicalName(),
+        com.adaptris.core.services.conditional.While.class.getCanonicalName());
 
-  @Override
-  public void prepare() throws CoreException {
-    try {
-      Args.notNull(getCondition(), "condition");
-      LifecycleHelper.prepare(getThen());
-    } catch (Exception e) {
-      throw ExceptionHelper.wrapCoreException(e);
-    }
-  }
-
-  @Override
-  protected void initService() throws CoreException {
-    LifecycleHelper.init(getThen());
-  }
-
-  @Override
-  protected void closeService() {
-    LifecycleHelper.close(getThen());
-  }
-  
-  @Override
-  public void start() throws CoreException {
-    LifecycleHelper.start(getThen());
-  }
-  
-  @Override
-  public void stop() {
-    LifecycleHelper.stop(getThen());
-  }
-  
-
-  public Condition getCondition() {
-    return condition;
-  }
-
-  public void setCondition(Condition condition) {
-    this.condition = condition;
-  }
-
-  public ThenService getThen() {
-    return then;
-  }
-
-  public void setThen(ThenService ifTrueService) {
-    this.then = ifTrueService;
-  }
-  
-  public Integer getMaxLoops() {
-    return maxLoops;
-  }
-
-  /**
-   * Set the maximum number of loops.
-   * <p>
-   * Note that you can set the max-loops to be {@code <0} to get infinite loops; in that situation
-   * if your condition is never met, the service will loop indefinitely.
-   * </p>
-   * 
-   * @param maxLoops the max loops; if not specified 10.
-   */
-  public void setMaxLoops(Integer maxLoops) {
-    this.maxLoops = maxLoops;
-  }
-
-  protected int maxLoops() {
-    return NumberUtils.toIntDefaultIfNull(getMaxLoops(), DEFAULT_MAX_LOOPS);
-  }
-
-  protected boolean exceedsMax(int loopCount) {
-    return BooleanUtils.and(new boolean[] {maxLoops() > 0, loopCount >= maxLoops()});
   }
 }

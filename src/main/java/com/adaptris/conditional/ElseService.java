@@ -16,72 +16,36 @@
 
 package com.adaptris.conditional;
 
-import javax.validation.Valid;
-import javax.validation.constraints.NotNull;
-
 import com.adaptris.annotation.AdapterComponent;
-import com.adaptris.annotation.AutoPopulated;
 import com.adaptris.annotation.ComponentProfile;
-import com.adaptris.core.ComponentLifecycle;
-import com.adaptris.core.ComponentLifecycleExtension;
-import com.adaptris.core.CoreException;
-import com.adaptris.core.Service;
-import com.adaptris.core.ServiceList;
-import com.adaptris.core.util.Args;
-import com.thoughtworks.xstream.annotations.XStreamAlias;
+import com.adaptris.annotation.Removal;
+import com.adaptris.core.util.LoggingHelper;
 
 /**
  * <p>
- * This service holder is used to hold the service or list of services that will be executed by logical expressions, such as {@link IfElse} should configured {@link Condition}'s NOT pass.
- * </p>>
+ * This service holder is used to hold the service or list of services that will be executed by
+ * logical expressions, such as {@link IfElse} should configured {@link Condition}'s NOT pass.
+ * </p>
+ * >
+ * 
  * @author amcgrath
- *
+ * @deprecated since 3.9.0; config-conditional was promoted into interlok-core
+ * 
  */
-@XStreamAlias("else")
 @AdapterComponent
 @ComponentProfile(summary = "A service/list that should be executed after conditions have NOT been met. ", tag = "service, conditional")
-public class ElseService implements ComponentLifecycle, ComponentLifecycleExtension {
+@Deprecated
+@Removal(version = "3.11.0", message = "config-conditional was promoted into interlok-core")
+public class ElseService extends com.adaptris.core.services.conditional.ElseService {
 
-  @NotNull
-  @Valid
-  @AutoPopulated
-  private Service service;
+  private transient boolean warningLogged = false;
 
   public ElseService() {
-    this.setService(new ServiceList());
-  }
+    LoggingHelper.logDeprecation(warningLogged, () -> {
+      warningLogged = true;
+    }, this.getClass().getCanonicalName(),
+        com.adaptris.core.services.conditional.ElseService.class.getCanonicalName());
 
-  @Override
-  public void prepare() throws CoreException {
-      service.prepare();
-  }
-
-  @Override
-  public void init() throws CoreException {
-      service.init();
-  }
-
-  @Override
-  public void start() throws CoreException {
-      service.start();
-  }
-
-  @Override
-  public void stop() {
-      service.stop();
-  }
-
-  @Override
-  public void close() {
-      service.close();
-  }
-
-  public Service getService() {
-    return service;
-  }
-
-  public void setService(Service elseService) {
-    this.service = Args.notNull(elseService, "service");
   }
 
 }

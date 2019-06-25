@@ -16,13 +16,11 @@
 
 package com.adaptris.conditional.conditions;
 
-import java.util.ArrayList;
 import com.adaptris.annotation.AdapterComponent;
 import com.adaptris.annotation.ComponentProfile;
-import com.adaptris.conditional.Condition;
-import com.adaptris.core.AdaptrisMessage;
-import com.adaptris.core.CoreException;
-import com.thoughtworks.xstream.annotations.XStreamAlias;
+import com.adaptris.annotation.Removal;
+import com.adaptris.core.services.conditional.Condition;
+import com.adaptris.core.util.LoggingHelper;
 
 /**
  * <p>
@@ -30,32 +28,24 @@ import com.thoughtworks.xstream.annotations.XStreamAlias;
  * evaluate to "true".
  * </p>
  * 
- * @config and
+ * @deprecated since 3.9.0; config-conditional was promoted into interlok-core
  * @author amcgrath
  *
  */
-@XStreamAlias("and")
+@Deprecated
+@Removal(version = "3.11.0", message = "config-conditional was promoted into interlok-core")
 @AdapterComponent
 @ComponentProfile(summary = "Allows you to test multiple conditions, where all must return true.", tag = "condition,service")
-public class ConditionAnd extends ConditionListImpl {
+public class ConditionAnd extends com.adaptris.core.services.conditional.conditions.ConditionAnd {
+
+  private transient boolean warningLogged = false;
 
   public ConditionAnd() {
-    setConditions(new ArrayList<Condition>());
-  }
+    LoggingHelper.logDeprecation(warningLogged, () -> {
+      warningLogged = true;
+    }, this.getClass().getCanonicalName(),
+        com.adaptris.core.services.conditional.conditions.ConditionAnd.class.getCanonicalName());
 
-  @Override
-  public boolean evaluate(AdaptrisMessage message) throws CoreException {
-    if(this.getConditions().size() == 0)
-      return false;
-    
-    boolean returnValue = true;
-    for(Condition condition : this.getConditions()) {
-      if(!condition.evaluate(message)) {
-        returnValue = false;
-        break;
-      }
-    }
-    return returnValue;
   }
 
 }

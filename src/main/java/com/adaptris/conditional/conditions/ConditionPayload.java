@@ -19,11 +19,10 @@ package com.adaptris.conditional.conditions;
 import com.adaptris.annotation.AdapterComponent;
 import com.adaptris.annotation.ComponentProfile;
 import com.adaptris.annotation.DisplayOrder;
+import com.adaptris.annotation.Removal;
 import com.adaptris.conditional.Condition;
 import com.adaptris.conditional.Operator;
-import com.adaptris.core.AdaptrisMessage;
-import com.adaptris.core.CoreException;
-import com.thoughtworks.xstream.annotations.XStreamAlias;
+import com.adaptris.core.util.LoggingHelper;
 
 /**
  * <p>
@@ -31,19 +30,26 @@ import com.thoughtworks.xstream.annotations.XStreamAlias;
  * to apply the conditional test.
  * </p>
  * 
- * @config payload
+ * @deprecated since 3.9.0; config-conditional was promoted into interlok-core
  * @author amcgrath
  *
  */
-@XStreamAlias("payload")
+@Deprecated
+@Removal(version = "3.11.0", message = "config-conditional was promoted into interlok-core")
 @AdapterComponent
 @ComponentProfile(summary = "Tests a payload against a configured operator.", tag = "condition,payload")
 @DisplayOrder(order = {"operator"})
-public class ConditionPayload extends ConditionWithOperator {
+public class ConditionPayload
+    extends com.adaptris.core.services.conditional.conditions.ConditionPayload {
   
-  @Override
-  public boolean evaluate(AdaptrisMessage message) throws CoreException {
-    log.trace("Testing payload condition");
-    return operator().apply(message, message.getContent());
+  private transient boolean warningLogged = false;
+
+  public ConditionPayload() {
+    LoggingHelper.logDeprecation(warningLogged, () -> {
+      warningLogged = true;
+    }, this.getClass().getCanonicalName(),
+        com.adaptris.core.services.conditional.conditions.ConditionPayload.class
+            .getCanonicalName());
+
   }
 }

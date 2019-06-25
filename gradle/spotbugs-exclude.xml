@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<FindBugsFilter
+              xmlns="https://github.com/spotbugs/filter/3.0.0"
+              xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+              xsi:schemaLocation="https://github.com/spotbugs/filter/3.0.0 https://raw.githubusercontent.com/spotbugs/spotbugs/3.1.0/spotbugs/etc/findbugsfilter.xsd">
+
+  <!-- Ignore name shadowing for these two classes, they're deprecated, and will be removed eventually -->
+  <Match>
+    <Class name="com.adaptris.conditional.conditions.ConditionAnd"/>
+    <Bug pattern="NM_SAME_SIMPLE_NAME_AS_SUPERCLASS" />
+  </Match>
+
+  <Match>
+    <Class name="com.adaptris.conditional.conditions.ConditionExpression"/>
+    <Bug pattern="NM_SAME_SIMPLE_NAME_AS_SUPERCLASS" />
+  </Match>
+
+  <Match>
+    <Class name="com.adaptris.conditional.conditions.ConditionFunction"/>
+    <Bug pattern="NM_SAME_SIMPLE_NAME_AS_SUPERCLASS" />
+  </Match>
+
+
+  <Match>
+    <Class name="com.adaptris.conditional.conditions.ConditionMetadata"/>
+    <Bug pattern="NM_SAME_SIMPLE_NAME_AS_SUPERCLASS" />
+  </Match>
+
+  <Match>
+    <Class name="com.adaptris.conditional.conditions.ConditionOr"/>
+    <Bug pattern="NM_SAME_SIMPLE_NAME_AS_SUPERCLASS" />
+  </Match>
+
+  <Match>
+    <Class name="com.adaptris.conditional.conditions.ConditionPayload"/>
+    <Bug pattern="NM_SAME_SIMPLE_NAME_AS_SUPERCLASS" />
+  </Match>
+
+  <Match>
+    <Class name="com.adaptris.conditional.DoWhile"/>
+    <Bug pattern="NM_SAME_SIMPLE_NAME_AS_SUPERCLASS" />
+  </Match>
+
+  <Match>
+    <Class name="com.adaptris.conditional.ElseService"/>
+    <Bug pattern="NM_SAME_SIMPLE_NAME_AS_SUPERCLASS" />
+  </Match>
+
+  <Match>
+    <Class name="com.adaptris.conditional.IfElse"/>
+    <Bug pattern="NM_SAME_SIMPLE_NAME_AS_SUPERCLASS" />
+  </Match>
+
+  <Match>
+    <Class name="com.adaptris.conditional.operator.Equals"/>
+    <Bug pattern="NM_SAME_SIMPLE_NAME_AS_SUPERCLASS" />
+  </Match>
+
+  <Match>
+    <Class name="com.adaptris.conditional.operator.Matches"/>
+    <Bug pattern="NM_SAME_SIMPLE_NAME_AS_SUPERCLASS" />
+  </Match>
+
+  <Match>
+    <Class name="com.adaptris.conditional.operator.NotEquals"/>
+    <Bug pattern="NM_SAME_SIMPLE_NAME_AS_SUPERCLASS" />
+  </Match>
+
+  <Match>
+    <Class name="com.adaptris.conditional.operator.NotNull"/>
+    <Bug pattern="NM_SAME_SIMPLE_NAME_AS_SUPERCLASS" />
+  </Match>
+
+  <Match>
+    <Class name="com.adaptris.conditional.ThenService"/>
+    <Bug pattern="NM_SAME_SIMPLE_NAME_AS_SUPERCLASS" />
+  </Match>
+
+  <Match>
+    <Class name="com.adaptris.conditional.While"/>
+    <Bug pattern="NM_SAME_SIMPLE_NAME_AS_SUPERCLASS" />
+  </Match>
+
+</FindBugsFilter>

@@ -17,17 +17,15 @@
 package com.adaptris.conditional.operator;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
-
 import org.junit.Before;
 import org.junit.Test;
-
-import com.adaptris.conditional.Operator;
 import com.adaptris.core.AdaptrisMessage;
 import com.adaptris.core.DefaultMessageFactory;
 
+@SuppressWarnings("deprecation")
 public class NullTest {
   
-  private Operator operator;
+  private Null operator;
   
   private AdaptrisMessage message;
   
