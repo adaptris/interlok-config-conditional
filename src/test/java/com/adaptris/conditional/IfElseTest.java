@@ -16,10 +16,14 @@
 
 package com.adaptris.conditional;
 
+import static org.junit.Assert.fail;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import com.adaptris.conditional.conditions.ConditionAnd;
@@ -56,7 +60,7 @@ public class IfElseTest  extends ServiceCase {
   
   @Mock private Condition mockCondition;
   
-  @Override
+  @Before
   public void setUp() throws Exception {
     MockitoAnnotations.initMocks(this);
     
@@ -76,11 +80,12 @@ public class IfElseTest  extends ServiceCase {
     LifecycleHelper.initAndStart(logicalExpression);
   }
   
-  @Override
+  @After
   public void tearDown() throws Exception {
     LifecycleHelper.stopAndClose(logicalExpression);
   }
   
+  @Test
   public void testNoThenService() throws Exception {
     logicalExpression.getThen().setService(new NullService());
     
@@ -96,6 +101,7 @@ public class IfElseTest  extends ServiceCase {
     verify(mockElseService, times(0)).doService(message);
   }
   
+  @Test
   public void testNoElseService() throws Exception {
     logicalExpression.getOtherwise().setService(new NullService());
     
@@ -111,6 +117,7 @@ public class IfElseTest  extends ServiceCase {
     verify(mockService, times(1)).doService(message);
   }
   
+  @Test
   public void testShouldRunService() throws Exception {
     when(mockCondition.evaluate(message))
         .thenReturn(true);
@@ -120,6 +127,7 @@ public class IfElseTest  extends ServiceCase {
     verify(mockService).doService(message);
   }
   
+  @Test
   public void testShouldNotRunService() throws Exception {
     when(mockCondition.evaluate(message))
         .thenReturn(false);
@@ -130,6 +138,7 @@ public class IfElseTest  extends ServiceCase {
     verify(mockElseService, times(1)).doService(message);
   }
   
+  @Test
   public void testInnerServiceExceptionPropagated() throws Exception {
     when(mockCondition.evaluate(message))
         .thenReturn(true);
@@ -145,6 +154,7 @@ public class IfElseTest  extends ServiceCase {
     }
   }
   
+  @Test
   public void testNoConditionSet() throws Exception {
     try {
       LifecycleHelper.initAndStart(new IfElse());
@@ -192,4 +202,10 @@ public class IfElseTest  extends ServiceCase {
     
     return result;
   }
+  
+  @Override
+  public boolean isAnnotatedForJunit4() {
+    return true;
+  } 
+  
 }
