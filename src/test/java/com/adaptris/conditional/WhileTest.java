@@ -16,10 +16,14 @@
 
 package com.adaptris.conditional;
 
+import static org.junit.Assert.fail;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import com.adaptris.conditional.conditions.ConditionMetadata;
@@ -49,7 +53,7 @@ public class WhileTest extends ServiceCase {
   @Mock
   private Condition mockCondition;
   
-  @Override
+  @Before
   public void setUp() throws Exception {
     MockitoAnnotations.initMocks(this);
     
@@ -66,11 +70,12 @@ public class WhileTest extends ServiceCase {
 
   }
   
-  @Override
+  @After
   public void tearDown() throws Exception {
     this.StopMe(logicalExpression);
   }
   
+  @Test
   public void testShouldRunServiceOnce() throws Exception {
     when(mockCondition.evaluate(message))
         .thenReturn(true)
@@ -81,6 +86,7 @@ public class WhileTest extends ServiceCase {
     verify(mockService, times(1)).doService(message);
   }
   
+  @Test
   public void testShouldRunServiceMaxDefault() throws Exception {
     when(mockCondition.evaluate(message))
         .thenReturn(true);
@@ -90,6 +96,7 @@ public class WhileTest extends ServiceCase {
     verify(mockService, times(10)).doService(message);
   }
   
+  @Test
   public void testShouldRunServiceConfiguredFive() throws Exception {
     when(mockCondition.evaluate(message))
         .thenReturn(true);
@@ -100,6 +107,7 @@ public class WhileTest extends ServiceCase {
     verify(mockService, times(5)).doService(message);
   }
   
+  @Test
   public void testShouldRunServiceUnconfiguredFive() throws Exception {
     when(mockCondition.evaluate(message))
         .thenReturn(true)
@@ -116,6 +124,7 @@ public class WhileTest extends ServiceCase {
     verify(mockService, times(5)).doService(message);
   }
   
+  @Test
   public void testShouldNotRunService() throws Exception {
     when(mockCondition.evaluate(message))
         .thenReturn(false);
@@ -125,6 +134,7 @@ public class WhileTest extends ServiceCase {
     verify(mockService, times(0)).doService(message);
   }
   
+  @Test
   public void testInnerServiceExceptionPropagated() throws Exception {
     when(mockCondition.evaluate(message))
         .thenReturn(true);
@@ -140,6 +150,7 @@ public class WhileTest extends ServiceCase {
     }
   }
   
+  @Test
   public void testNoConditionSet() throws Exception {
     logicalExpression.setCondition(null);
     try {
@@ -188,4 +199,10 @@ public class WhileTest extends ServiceCase {
     
     return logicalExpression;
   }
+  
+  @Override
+  public boolean isAnnotatedForJunit4() {
+    return true;
+  } 
+    
 }

@@ -16,6 +16,7 @@
 
 package com.adaptris.conditional;
 
+import static org.junit.Assert.fail;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -52,7 +53,6 @@ public class DoWhileTest extends ServiceCase {
   @Mock
   private Condition mockCondition;
   
-  @Override
   @Before
   public void setUp() throws Exception {
     MockitoAnnotations.initMocks(this);
@@ -70,7 +70,6 @@ public class DoWhileTest extends ServiceCase {
 
   }
   
-  @Override
   @After
   public void tearDown() throws Exception {
     LifecycleHelper.stopAndClose(doWhile);
@@ -173,4 +172,9 @@ public class DoWhileTest extends ServiceCase {
     doWhile.setThen(thenSrvc);
     return doWhile;
   }
+  
+  @Override
+  public boolean isAnnotatedForJunit4() {
+    return true;
+  } 
 }
